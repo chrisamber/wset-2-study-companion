@@ -52,7 +52,7 @@ Create `lib/fuzzy.test.ts`:
 ```ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { normalize, editDistance, matchAnswer } from "./fuzzy.ts";
+import { normalize, editDistance, matchAnswer } from "./fuzzy";
 
 test("normalize strips case, accents, and punctuation", () => {
   assert.equal(normalize("Gewürztraminer"), "gewurztraminer");
@@ -196,8 +196,8 @@ import {
   buildTermCards,
   ALL_CARDS,
   cardsForDeck,
-} from "./flashcards-deck.ts";
-import { matchAnswer } from "./fuzzy.ts";
+} from "./flashcards-deck";
+import { matchAnswer } from "./fuzzy";
 
 test("assoc deck maps a known GI to its grape", () => {
   const cards = buildAssocCards();
@@ -363,8 +363,8 @@ Create `lib/flashcards.test.ts`:
 ```ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { grade, buildSession, deckSummary } from "./flashcards.ts";
-import type { Card } from "./flashcards-deck.ts";
+import { grade, buildSession, deckSummary } from "./flashcards";
+import type { Card } from "./flashcards-deck";
 
 const card = (id: string): Card => ({
   id,
