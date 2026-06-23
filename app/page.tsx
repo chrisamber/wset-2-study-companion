@@ -1,65 +1,101 @@
-import Image from "next/image";
+import Link from "next/link";
+import { CONCEPTS } from "@/data/concepts";
+import { VARIETIES } from "@/data/varieties";
+import { TERMS } from "@/data/terms";
+import { QUESTIONS } from "@/data/questions";
+import { ProgressSnapshot } from "@/components/ProgressSnapshot";
+
+const FEATURES = [
+  { href: "/learn", emoji: "📖", title: "Learn", desc: "The whole syllabus, one Learning Outcome at a time — with the marks each is worth." },
+  { href: "/explore", emoji: "🍇", title: "Explore", desc: "Every grape: style, key regions & GIs. Search, filter, or browse by region." },
+  { href: "/decode", emoji: "🏷️", title: "Decode labels", desc: "What AOC, DOCG, Prädikat, Crianza & Grand Cru actually mean — and the grape behind a GI." },
+  { href: "/climate", emoji: "🌡️", title: "Compare climate", desc: "See how cool vs warm growing changes the same grape — the cause WSET keeps testing." },
+  { href: "/quiz", emoji: "📝", title: "Quiz", desc: "100 verified questions: timed exams or practice by LO, with instant feedback." },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="space-y-10">
+      {/* Hero */}
+      <section className="pt-4">
+        <p className="chip">Exam: early July 2026 · pass 55%</p>
+        <h1 className="mt-3 font-display text-4xl font-semibold leading-tight sm:text-5xl">
+          WSET Level&nbsp;2,
+          <br />
+          <span className="text-wine">made navigable.</span>
+        </h1>
+        <p className="mt-3 max-w-xl text-muted">
+          A study companion for the Award in Wines — every grape, region, label term and practice
+          question, grounded in your verified syllabus notes. Nothing invented.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link href="/quiz" className="btn-primary">Start a quiz →</Link>
+          <Link href="/explore" className="btn-ghost">Explore the grapes</Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="mt-6 flex flex-wrap gap-2 text-xs text-muted">
+          <span className="chip">{VARIETIES.length} grape varieties</span>
+          <span className="chip">{TERMS.length} label terms</span>
+          <span className="chip">{QUESTIONS.length} quiz questions</span>
         </div>
-      </main>
+      </section>
+
+      {/* Where the marks are */}
+      <section className="card p-5 sm:p-6">
+        <h2 className="font-display text-xl font-semibold">Where the marks are</h2>
+        <p className="mt-1 text-sm text-muted">
+          50 questions, 1 mark each. Grapes &amp; their regions (LO3 + LO4) are{" "}
+          <strong className="text-ink">62% of the exam</strong> — spend your time there.
+        </p>
+        <ul className="mt-4 space-y-1.5">
+          {CONCEPTS.map((c) => {
+            const pct = (c.questions / 50) * 100;
+            const heavy = c.lo === 3 || c.lo === 4;
+            return (
+              <li key={c.lo}>
+                <Link
+                  href="/learn"
+                  className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition hover:bg-blush"
+                >
+                  <span className={`w-40 shrink-0 ${heavy ? "font-semibold text-wine" : "text-ink"}`}>
+                    LO{c.lo} · {c.title}
+                  </span>
+                  <span className="h-2.5 flex-1 overflow-hidden rounded-full bg-cream-2">
+                    <span
+                      className="bar-fill block h-full rounded-full"
+                      style={{ width: `${pct}%`, background: heavy ? "var(--color-wine)" : "var(--color-wine-light)" }}
+                    />
+                  </span>
+                  <span className="w-12 shrink-0 text-right tabular-nums text-muted">{c.questions} Q</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      {/* Feature grid */}
+      <section>
+        <h2 className="mb-3 font-display text-xl font-semibold">Five ways to study</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {FEATURES.map((f) => (
+            <Link
+              key={f.href}
+              href={f.href}
+              className="card group p-5 transition hover:-translate-y-0.5 hover:border-wine"
+            >
+              <div className="flex items-start gap-3">
+                <span className="text-2xl" aria-hidden>{f.emoji}</span>
+                <div>
+                  <h3 className="font-display text-lg font-semibold group-hover:text-wine">{f.title}</h3>
+                  <p className="mt-0.5 text-sm text-muted">{f.desc}</p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <ProgressSnapshot />
     </div>
   );
 }

@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍷 WSET L2 Companion
 
-## Getting Started
+An interactive study app for the **WSET Level 2 Award in Wines**, built for Zeal.
+Every fact is grounded in this pack's verified syllabus material — the RAG corpus,
+the per-grape `sources/` files, and the two fact-checked mock exams. Nothing is invented.
 
-First, run the development server:
+## Features
+
+| Page | What it does |
+|------|--------------|
+| **Home** (`/`) | Dashboard with the LO exam weighting (where the marks are) + your progress |
+| **Learn** (`/learn`) | The whole syllabus, one Learning Outcome at a time, with marks per LO |
+| **Explore** (`/explore`) | All 30 syllabus grapes — style, regions/GIs, climate. Search, filter, or browse **by region** |
+| **Decode** (`/decode`) | Label glossary (AOC, DOCG, Prädikat, Crianza, Grand Cru…) + "the place names the grape" |
+| **Climate** (`/climate`) | Cool vs warm style for the 9 principal grapes the sources contrast |
+| **Quiz** (`/quiz`) | 100 verified questions — timed 50-Q exams or practice by LO, instant feedback, per-LO scoring, retry-your-misses, saved progress |
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd wset-app
+npm install      # first time only
+npm run dev      # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Production build: `npm run build && npm start`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How the content stays grounded
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **`data/varieties.ts`** — the 30 grapes, transcribed from the verified RAG corpus; cool/warm
+  climate styles for the principals were extracted from their `sources/*-source.md` files and verified.
+- **`data/terms.ts`** — labelling glossary from the RAG corpus LO1 + term lists.
+- **`data/concepts.ts`** — per-LO study content from the RAG corpus.
+- **`data/questions.json`** — generated from the two mock exams by `../build_quiz.py`
+  (`python3 -c "import build_quiz, json; print(json.dumps(build_quiz.build_bank()))" > wset-app/data/questions.json`).
 
-## Learn More
+To refresh the question bank after editing the mock exams, re-run that command.
 
-To learn more about Next.js, take a look at the following resources:
+## Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · Fraunces + Geist (next/font).
+The quiz scoring/shuffle logic lives in `lib/quiz-engine.ts` (a port of the repo's tested
+`quiz-engine.js`). Progress is stored in the browser via `localStorage` (no account, no server).

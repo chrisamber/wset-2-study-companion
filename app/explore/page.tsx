@@ -1,0 +1,283 @@
+"use client";
+import { useMemo, useState } from "react";
+import { VARIETIES, regionIndex, varietyById } from "@/data/varieties";
+import type { Variety } from "@/lib/types";
+
+type Colour = "all" | "black" | "white";
+type Tier = "all" | "principal" | "regional";
+type View = "grapes" | "regions";
+
+function Dot({ colour }: { colour: "black" | "white" }) {
+  return (
+    <span
+      className={`inline-block h-2.5 w-2.5 rounded-full ${colour === "black" ? "bg-wine" : "bg-gold"}`}
+      aria-hidden
+    />
+  );
+}
+
+export default function ExplorePage() {
+  const [q, setQ] = useState("");
+  const [colour, setColour] = useState<Colour>("all");
+  const [tier, setTier] = useState<Tier>("all");
+  const [view, setView] = useState<View>("grapes");
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const grapes = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return VARIETIES.filter((v) => {
+      if (colour !== "all" && v.colour !== colour) return false;
+      if (tier !== "all" && v.tier !== tier) return false;
+      if (!needle) return true;
+      return (
+        v.name.toLowerCase().includes(needle) ||
+        v.summary.toLowerCase().includes(needle) ||
+        v.aromas.some((a) => a.toLowerCase().includes(needle)) ||
+        v.regions.some((r) => r.gi.toLowerCase().includes(needle) || r.country.toLowerCase().includes(needle))
+      );
+    });
+  }, [q, colour, tier]);
+
+  const regions = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    const idx = regionIndex();
+    if (!needle) return idx;
+    return idx.filter(
+      (r) =>
+        r.gi.toLowerCase().includes(needle) ||
+        r.country.toLowerCase().includes(needle) ||
+        r.varieties.some((v) => v.name.toLowerCase().includes(needle))
+    );
+  }, [q]);
+
+  const detail = selected ? varietyById(selected) : undefined;
+
+  return (
+    <div className="space-y-5">
+      <header>
+        <h1 className="font-display text-3xl font-semibold">Grape &amp; region explorer</h1>
+        <p className="mt-1 text-muted">
+          Every variety in the syllabus — its style, key regions and label terms. Switch to{" "}
+          <em>Regions</em> to go the other way: pick a place, see its grapes.
+        </p>
+      </header>
+
+      {/* Controls */}
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex rounded-xl border border-line bg-card p-0.5">
+            {(["grapes", "regions"] as View[]).map((vw) => (
+              <button
+                key={vw}
+                onClick={() => setView(vw)}
+                className={`rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition ${
+                  view === vw ? "bg-wine text-white" : "text-muted hover:text-wine"
+                }`}
+              >
+                {vw}
+              </button>
+            ))}
+          </div>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={view === "grapes" ? "Search grapes, aromas, regions…" : "Search regions or grapes…"}
+            className="min-w-[12rem] flex-1 rounded-xl border border-line bg-card px-4 py-2 text-sm outline-none focus:border-wine"
+          />
+        </div>
+
+        {view === "grapes" && (
+          <div className="flex flex-wrap gap-3 text-xs">
+            <Filter label="Colour" value={colour} setValue={setColour} options={["all", "black", "white"]} />
+            <Filter label="Tier" value={tier} setValue={setTier} options={["all", "principal", "regional"]} />
+            <span className="self-center text-muted">{grapes.length} grapes</span>
+          </div>
+        )}
+      </div>
+
+      {/* Grapes grid */}
+      {view === "grapes" && (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {grapes.map((v) => (
+            <button
+              key={v.id}
+              onClick={() => setSelected(v.id)}
+              className="card group p-4 text-left transition hover:-translate-y-0.5 hover:border-wine"
+            >
+              <div className="flex items-center gap-2">
+                <Dot colour={v.colour} />
+                <h3 className="font-display text-lg font-semibold group-hover:text-wine">{v.name}</h3>
+              </div>
+              <p className="mt-1 line-clamp-2 text-sm text-muted">{v.summary}</p>
+              <div className="mt-2 flex flex-wrap gap-1">
+                {v.regions.slice(0, 3).map((r) => (
+                  <span key={r.gi} className="chip">{r.gi}</span>
+                ))}
+                {v.regions.length > 3 && <span className="chip">+{v.regions.length - 3}</span>}
+              </div>
+            </button>
+          ))}
+          {grapes.length === 0 && <p className="text-sm text-muted">No grapes match your filters.</p>}
+        </div>
+      )}
+
+      {/* Regions view */}
+      {view === "regions" && (
+        <div className="space-y-3">
+          {regions.map((r) => (
+            <div key={`${r.gi}|${r.country}`} className="card p-4">
+              <div className="flex items-baseline justify-between gap-2">
+                <h3 className="font-semibold">{r.gi}</h3>
+                <span className="chip shrink-0">{r.country}</span>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {r.varieties.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setSelected(v.id)}
+                    className="flex items-center gap-1.5 rounded-full bg-cream-2 px-2.5 py-1 text-xs font-medium transition hover:bg-blush hover:text-wine"
+                  >
+                    <Dot colour={v.colour} />
+                    {v.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+          {regions.length === 0 && <p className="text-sm text-muted">No regions match your search.</p>}
+        </div>
+      )}
+
+      {detail && <VarietyDetail v={detail} onClose={() => setSelected(null)} />}
+    </div>
+  );
+}
+
+function Filter<T extends string>({
+  label,
+  value,
+  setValue,
+  options,
+}: {
+  label: string;
+  value: T;
+  setValue: (v: T) => void;
+  options: T[];
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      <span className="text-muted">{label}:</span>
+      {options.map((o) => (
+        <button
+          key={o}
+          onClick={() => setValue(o)}
+          className={`rounded-full px-2.5 py-1 capitalize transition ${
+            value === o ? "bg-wine text-white" : "border border-line bg-card text-muted hover:border-wine"
+          }`}
+        >
+          {o}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function VarietyDetail({ v, onClose }: { v: Variety; onClose: () => void }) {
+  const byCountry = new Map<string, string[]>();
+  for (const r of v.regions) {
+    if (!byCountry.has(r.country)) byCountry.set(r.country, []);
+    byCountry.get(r.country)!.push(r.gi);
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-40 flex items-end justify-center bg-ink/40 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      onClick={onClose}
+    >
+      <div
+        className="max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-line bg-card p-6 shadow-xl sm:rounded-3xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Dot colour={v.colour} />
+              <h2 className="font-display text-2xl font-semibold">{v.name}</h2>
+            </div>
+            <span className="chip mt-1">
+              {v.tier === "principal" ? "Principal (LO3)" : "Regional (LO4)"} · {v.colour}
+            </span>
+          </div>
+          <button onClick={onClose} className="rounded-full p-1 text-muted hover:bg-cream-2" aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        <p className="mt-3 text-muted">{v.summary}</p>
+
+        <div className="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
+          <Stat label="Body" value={v.body} />
+          <Stat label="Acidity" value={v.acidity} />
+          <Stat label="Tannin" value={v.tannin} />
+          <Stat label="Sweetness" value={v.sweetness ?? "Dry"} />
+        </div>
+
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold text-wine">Aromas &amp; flavours</h3>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {v.aromas.map((a) => (
+              <span key={a} className="chip">{a}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold text-wine">Key regions &amp; GIs</h3>
+          <div className="mt-1.5 space-y-1 text-sm">
+            {[...byCountry.entries()].map(([country, gis]) => (
+              <div key={country} className="flex gap-2">
+                <span className="w-28 shrink-0 text-muted">{country}</span>
+                <span>{gis.join(", ")}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {v.terms && v.terms.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-sm font-semibold text-wine">Labelling terms</h3>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {v.terms.map((t) => (
+                <span key={t} className="chip border-wine/30 bg-blush text-wine">{t}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {v.climate && (
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
+              <p className="font-semibold">❄️ Cool</p>
+              <p className="mt-1">{v.climate.cool}</p>
+            </div>
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+              <p className="font-semibold">☀️ Warm</p>
+              <p className="mt-1">{v.climate.warm}</p>
+            </div>
+          </div>
+        )}
+
+        <button onClick={onClose} className="btn-ghost mt-5 w-full">Close</button>
+      </div>
+    </div>
+  );
+}
+
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl bg-cream-2 px-3 py-2">
+      <div className="text-xs text-muted">{label}</div>
+      <div className="font-medium">{value}</div>
+    </div>
+  );
+}
