@@ -19,8 +19,8 @@ export default function RootLayout({
     <html lang="en" className={`${display.variable} ${sans.variable} antialiased`}>
       <body className="flex min-h-screen flex-col">
         <Nav />
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-24 pt-7">{children}</main>
-        <footer className="border-t border-line/70 px-4 py-6 text-center text-xs text-muted">
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-24 pt-9">{children}</main>
+        <footer className="border-t border-line/70 px-4 py-7 text-center text-xs text-muted">
           Study companion for Zeal · content grounded in the WSET L2 syllabus · not affiliated with WSET.
         </footer>
       </body>

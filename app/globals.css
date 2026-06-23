@@ -1,16 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #faf6f2;
+  --color-cream: #fdfaf6;
   --color-cream-2: #f3ebe4;
-  --color-card: #ffffff;
-  --color-ink: #2a1a20;
+  --color-card: #fffdfb;
+  --color-ink: #241a1d;
   --color-muted: #7c6a70;
-  --color-line: #e8ddd6;
+  --color-line: #ece0d7;
   --color-wine: #7b2d43;
   --color-wine-dark: #5d2030;
   --color-wine-light: #9d3a57;
-  --color-blush: #f6ecef;
+  --color-blush: #f7ecef;
   --color-gold: #b07d2b;
   --color-good: #1f7a4d;
   --color-good-bg: #e8f4ec;
@@ -27,8 +27,7 @@ html {
 
 body {
   background:
-    radial-gradient(1100px 560px at 100% -10%, #fbeef0 0%, rgba(251, 238, 240, 0) 55%),
-    radial-gradient(820px 460px at -10% 0%, #f3ece7 0%, rgba(243, 236, 231, 0) 50%),
+    radial-gradient(900px 460px at 100% -12%, var(--color-blush) 0%, rgba(247, 236, 239, 0) 58%),
     var(--color-cream);
   color: var(--color-ink);
   font-family: var(--font-sans);
@@ -36,8 +35,11 @@ body {
 }
 
 @layer components {
+  .kicker {
+    @apply text-[0.625rem] font-semibold uppercase tracking-[0.2em] text-gold;
+  }
   .card {
-    @apply rounded-2xl border border-line bg-card shadow-sm;
+    @apply rounded-2xl border border-line bg-card shadow-[0_1px_2px_rgba(60,20,30,0.04)];
   }
   .chip {
     @apply inline-flex items-center gap-1 rounded-full border border-line bg-cream px-2.5 py-0.5 text-xs text-muted;
