@@ -75,17 +75,18 @@ export default function QuizPage() {
     return (
       <div className="space-y-6">
         <header>
-          <h1 className="font-display text-3xl font-semibold">Quiz</h1>
+          <p className="kicker">Quiz</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Test yourself</h1>
           <p className="mt-1 text-muted">100 independently fact-checked questions from two mock papers.</p>
         </header>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <button onClick={() => setScreen("exam-setup")} className="card p-5 text-left transition hover:-translate-y-0.5 hover:border-wine">
-            <div className="font-display text-lg font-semibold">📝 Exam mode</div>
+          <button onClick={() => setScreen("exam-setup")} className="card p-5 text-left transition hover:border-wine">
+            <div className="font-display text-lg font-semibold text-ink">📝 Exam mode</div>
             <p className="mt-1 text-sm text-muted">A full 50-question paper with a 60-minute timer. Results at the end — exam-day rehearsal.</p>
           </button>
-          <button onClick={() => setScreen("practice-setup")} className="card p-5 text-left transition hover:-translate-y-0.5 hover:border-wine">
-            <div className="font-display text-lg font-semibold">🎯 Practice mode</div>
+          <button onClick={() => setScreen("practice-setup")} className="card p-5 text-left transition hover:border-wine">
+            <div className="font-display text-lg font-semibold text-ink">🎯 Practice mode</div>
             <p className="mt-1 text-sm text-muted">Pick a Learning Outcome. Instant feedback and the “why” after each question. Untimed.</p>
           </button>
         </div>
@@ -111,8 +112,8 @@ export default function QuizPage() {
         <BackHeader title="Exam mode" subtitle="50 questions · 60 minutes · no feedback until you submit." onBack={() => setScreen("home")} />
         <div className="grid gap-3 sm:grid-cols-2">
           {PAPERS.map((p) => (
-            <button key={p} onClick={() => start(questionsByPaper(p), { mode: "exam", scope: `Paper ${p}` })} className="card p-5 text-left transition hover:-translate-y-0.5 hover:border-wine">
-              <div className="font-display text-lg font-semibold text-wine">Paper {p}</div>
+            <button key={p} onClick={() => start(questionsByPaper(p), { mode: "exam", scope: `Paper ${p}` })} className="card p-5 text-left transition hover:border-wine">
+              <div className="font-display text-lg font-semibold text-ink">Paper {p}</div>
               <p className="mt-1 text-sm text-muted">{questionsByPaper(p).length} questions</p>
             </button>
           ))}
@@ -144,7 +145,7 @@ export default function QuizPage() {
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => { if (confirm("Quit this quiz? This attempt won’t be saved.")) setScreen("home"); }} className="text-sm text-muted hover:text-wine">← Quit</button>
+          <button onClick={() => { if (confirm("Quit this quiz? This attempt won’t be saved.")) setScreen("home"); }} className="text-sm text-muted hover:text-ink">← Quit</button>
           <span className="text-sm text-muted">{meta.scope}</span>
           {isExam ? (
             <span className={`ml-auto rounded-lg px-3 py-1 text-sm font-bold tabular-nums ${remaining < 300 ? "bg-bad-bg text-bad" : "bg-blush text-wine"}`}>{fmt(remaining)}</span>
@@ -161,14 +162,14 @@ export default function QuizPage() {
           <p className="font-display text-lg font-semibold">{item.q.stem}</p>
           <div className="mt-4 space-y-2.5">
             {opts.map((o) => {
-              let cls = "border-line bg-cream hover:border-wine";
-              if (isExam && chosen === o.letter) cls = "border-wine bg-blush";
-              else if (answered && o.letter === correct) cls = "border-good bg-good-bg";
-              else if (answered && o.letter === chosen) cls = "border-bad bg-bad-bg";
-              else if (answered) cls = "border-line bg-cream opacity-60";
+              let cls = "border-line bg-card text-ink hover:border-wine";
+              if (isExam && chosen === o.letter) cls = "border-wine bg-blush text-ink";
+              else if (answered && o.letter === correct) cls = "border-good bg-good-bg text-ink";
+              else if (answered && o.letter === chosen) cls = "border-bad bg-bad-bg text-ink";
+              else if (answered) cls = "border-line bg-card text-muted opacity-60";
               return (
                 <button key={o.letter} onClick={() => choose(o.letter)} disabled={answered} className={`flex w-full items-start gap-3 rounded-xl border px-3.5 py-3 text-left transition ${cls}`}>
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-card text-xs font-bold uppercase text-wine">{o.letter}</span>
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-line bg-card text-xs font-bold uppercase text-current">{o.letter}</span>
                   <span>{o.text}</span>
                 </button>
               );
@@ -240,24 +241,32 @@ export default function QuizPage() {
     return (
       <div className="space-y-5">
         <header>
-          <h1 className="font-display text-3xl font-semibold">Results</h1>
+          <p className="kicker">Quiz</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Results</h1>
           <p className="mt-1 text-muted">{meta.scope} · {meta.mode}</p>
         </header>
 
+        {(() => {
+          const band = result.band ?? "Fail";
+          const tone: Record<string, string> = {
+            Distinction: "border-gold/40 bg-[#fbf3e4] text-gold",
+            Merit: "border-wine/30 bg-blush text-wine",
+            Pass: "border-good/30 bg-good-bg text-good",
+            Fail: "border-bad/30 bg-bad-bg text-bad",
+          };
+          return (
+            <div className={`mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-semibold ${tone[band] ?? tone.Fail}`}>
+              {band} · {result.correct}/{result.total}
+            </div>
+          );
+        })()}
+
         <div className="card flex flex-wrap items-center gap-4 p-5">
-          <div className="font-display text-4xl font-bold text-wine">
+          <div className="font-display text-4xl font-bold text-ink">
             {result.correct}
             <span className="text-lg text-muted">/{result.total}</span>
           </div>
           <div className="text-xl font-bold text-muted">{pct}%</div>
-          {result.band && (
-            <span
-              className="ml-auto rounded-full px-3.5 py-1 text-sm font-bold text-white"
-              style={{ background: result.band === "Distinction" ? "var(--color-gold)" : result.band === "Merit" ? "var(--color-good)" : result.band === "Pass" ? "var(--color-wine)" : "var(--color-bad)" }}
-            >
-              {result.band}
-            </span>
-          )}
         </div>
 
         <section className="card p-5">
@@ -278,7 +287,7 @@ export default function QuizPage() {
             <div className="space-y-2">
               {missed.map((q) => (
                 <details key={q.id} className="rounded-xl bg-cream-2 p-3 text-sm">
-                  <summary className="cursor-pointer font-medium"><span className="text-wine">LO{q.lo}</span> · {q.stem}</summary>
+                  <summary className="cursor-pointer font-medium"><span className="font-semibold text-ink">LO{q.lo}</span> · {q.stem}</summary>
                   <p className="mt-2"><span className="font-semibold text-bad">Your answer:</span> {chosenText(q.id) ?? <em>left blank</em>}</p>
                   <p className="mt-1"><span className="font-semibold text-good">Correct:</span> {q.options[q.answer]}</p>
                   <p className="mt-1 text-muted">{q.explanation}</p>
@@ -306,8 +315,9 @@ export default function QuizPage() {
 function BackHeader({ title, subtitle, onBack }: { title: string; subtitle: string; onBack: () => void }) {
   return (
     <header>
-      <button onClick={onBack} className="text-sm text-muted hover:text-wine">← Home</button>
-      <h1 className="mt-1 font-display text-3xl font-semibold">{title}</h1>
+      <button onClick={onBack} className="text-sm text-muted hover:text-ink">← Home</button>
+      <p className="kicker mt-2">Quiz</p>
+      <h1 className="mt-1 font-display text-3xl font-semibold text-ink">{title}</h1>
       <p className="mt-1 text-muted">{subtitle}</p>
     </header>
   );
@@ -323,7 +333,7 @@ function PracticeSetup({ onBack, onStart }: { onBack: () => void; onStart: (los:
     <div className="space-y-5">
       <BackHeader title="Practice mode" subtitle="Choose what to drill — instant feedback after each answer." onBack={onBack} />
       <div className="flex gap-3 text-sm">
-        <button onClick={() => setSel([1, 2, 3, 4, 5, 6])} className="text-wine underline underline-offset-2">Select all</button>
+        <button onClick={() => setSel([1, 2, 3, 4, 5, 6])} className="text-ink underline underline-offset-2 hover:text-wine">Select all</button>
         <button onClick={() => setSel([])} className="text-muted underline underline-offset-2">Clear</button>
       </div>
       <div className="space-y-2">
