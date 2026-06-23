@@ -34,7 +34,8 @@ export default function DecodePage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-display text-3xl font-semibold">Label decoder</h1>
+        <p className="kicker">Decode</p>
+        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Label decoder</h1>
         <p className="mt-1 text-muted">
           What the words on the bottle guarantee — quality tiers, ageing terms, sweetness and
           ripeness levels. Search or filter by country.
@@ -68,26 +69,28 @@ export default function DecodePage() {
       <div className="space-y-6">
         {byGroup.map(([g, terms]) => (
           <section key={g}>
-            <h2 className="mb-2 font-display text-lg font-semibold text-wine">{g}</h2>
-            <div className="grid gap-2.5 sm:grid-cols-2">
+            <p className="kicker mb-2">{g}</p>
+            <dl className="divide-y divide-line">
               {terms.map((t) => (
-                <div key={t.term} className="card p-4">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="font-semibold">{t.term}</h3>
-                    <span className="chip shrink-0">{t.category}</span>
-                  </div>
-                  <p className="mt-1 text-sm text-muted">{t.meaning}</p>
-                  {t.note && <p className="mt-1.5 text-xs text-muted/80">{t.note}</p>}
+                <div key={t.term} className="grid gap-1 py-3 sm:grid-cols-[200px_1fr]">
+                  <dt className="font-semibold text-ink">
+                    {t.term} <span className="chip ml-1 align-middle">{t.category}</span>
+                  </dt>
+                  <dd className="text-sm text-muted">
+                    {t.meaning}
+                    {t.note && <span className="mt-1 block text-xs text-muted/80">{t.note}</span>}
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </section>
         ))}
       </div>
 
       {/* GI → grape cross-reference */}
       <section className="card p-5">
-        <h2 className="font-display text-lg font-semibold">When the place names the grape</h2>
+        <p className="kicker">Cross-reference</p>
+        <h2 className="mt-2 font-display text-lg font-semibold text-ink">When the place names the grape</h2>
         <p className="mt-1 text-sm text-muted">
           Many European labels show a region, not a grape. These GIs effectively tell you the variety:
         </p>
