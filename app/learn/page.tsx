@@ -5,9 +5,10 @@ export const metadata = { title: "Learn — WSET L2" };
 
 export default function LearnPage() {
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <header>
-        <h1 className="font-display text-3xl font-semibold">Learn the syllabus</h1>
+        <p className="kicker">Learn</p>
+        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Learn the syllabus</h1>
         <p className="mt-1 text-muted">
           Six Learning Outcomes. The badge on each shows how many of the 50 exam marks it carries —
           so you can see where the time is best spent.
@@ -18,7 +19,7 @@ export default function LearnPage() {
         {CONCEPTS.map((c) => (
           <section key={c.lo} className="card p-5 sm:p-6">
             <div className="flex items-baseline justify-between gap-3">
-              <h2 className="font-display text-xl font-semibold">
+              <h2 className="font-display text-xl font-semibold text-ink">
                 LO{c.lo} · {c.title}
               </h2>
               <span
@@ -32,7 +33,7 @@ export default function LearnPage() {
             <div className="mt-4 space-y-4">
               {c.sections.map((s, i) => (
                 <div key={i}>
-                  <h3 className="text-sm font-semibold text-wine">{s.heading}</h3>
+                  <h3 className="kicker mt-4">{s.heading}</h3>
                   <ul className="mt-1 space-y-1">
                     {s.points.map((p, j) => (
                       <li key={j} className="flex gap-2 text-sm">
