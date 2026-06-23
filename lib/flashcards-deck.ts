@@ -18,16 +18,23 @@ export type DeckId = "assoc" | "terms" | "all";
 
 export function buildAssocCards(): Card[] {
   const map = new Map<string, { display: string; kicker: string; grapes: string[] }>();
+  // A few GIs are written as compound pairs ("Sancerre / Pouilly-Fumé", "Graves / Bordeaux").
+  // Split them so each named GI becomes one merged card — otherwise the pair produces a
+  // redundant parallel card that bypasses dedup. Splitting invents nothing: the compound
+  // string already asserts each named GI is associated with that grape.
   const add = (gi: string, kicker: string, grape: string) => {
-    const key = normalize(gi);
-    if (!key) return;
-    let e = map.get(key);
-    if (!e) {
-      e = { display: gi, kicker, grapes: [] };
-      map.set(key, e);
+    for (const part of gi.split("/")) {
+      const display = part.trim();
+      const key = normalize(display);
+      if (!key) continue;
+      let e = map.get(key);
+      if (!e) {
+        e = { display, kicker, grapes: [] };
+        map.set(key, e);
+      }
+      if (!e.kicker && kicker) e.kicker = kicker;
+      if (!e.grapes.includes(grape)) e.grapes.push(grape);
     }
-    if (!e.kicker && kicker) e.kicker = kicker;
-    if (!e.grapes.includes(grape)) e.grapes.push(grape);
   };
   for (const v of VARIETIES) for (const r of v.regions) add(r.gi, r.country, v.name);
   for (const g of GI_TO_GRAPE) add(g.gi, g.note, g.grape);
@@ -41,7 +48,7 @@ export function buildAssocCards(): Card[] {
       kicker: e.kicker || undefined,
       canonical: e.grapes[0],
       accepted: e.grapes,
-      note: e.grapes.length > 1 ? `Also valid: ${e.grapes.join(", ")}` : undefined,
+      note: e.grapes.length > 1 ? `Also valid: ${e.grapes.slice(1).join(", ")}` : undefined,
     });
   }
   return cards;

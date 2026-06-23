@@ -33,6 +33,23 @@ test("terms deck prompts with meaning and answers with the term", () => {
   assert.equal(matchAnswer("kabinett", kab!.accepted).correct, true);
 });
 
+test("compound GIs are split into individual cards that merge", () => {
+  const cards = buildAssocCards();
+  // No card prompt should retain a compound "A / B" GI.
+  assert.ok(
+    !cards.some((c) => c.prompt.includes("/")),
+    "compound GIs should be split, not kept as one card"
+  );
+  // "Graves" appears in two compound GIs (Cabernet Sauvignon and Sauvignon Blanc);
+  // after splitting they merge into one Graves card that accepts both.
+  const graves = cards.find((c) => c.id === "assoc:graves");
+  assert.ok(graves, "expected a merged card for Graves");
+  assert.equal(matchAnswer("Cabernet Sauvignon", graves!.accepted).correct, true);
+  assert.equal(matchAnswer("Sauvignon Blanc", graves!.accepted).correct, true);
+  // The "Also valid" note lists only the alternatives, not the canonical itself.
+  assert.ok(!graves!.note?.includes(graves!.canonical), "note should exclude the canonical grape");
+});
+
 test("every card id is unique and non-empty", () => {
   const ids = ALL_CARDS.map((c) => c.id);
   assert.ok(ids.every((id) => id.length > 0));
