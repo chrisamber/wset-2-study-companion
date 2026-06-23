@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/decode", label: "Decode" },
   { href: "/climate", label: "Climate" },
   { href: "/quiz", label: "Quiz" },
+  { href: "/flashcards", label: "Flashcards" },
 ];
 
 export function Nav() {
