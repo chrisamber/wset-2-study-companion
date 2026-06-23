@@ -34,3 +34,16 @@ test("matchAnswer rejects a different grape and empty input", () => {
   assert.equal(matchAnswer("", ["Riesling"]).correct, false);
   assert.equal(matchAnswer("Cab", ["Gamay"]).correct, false); // short input must be near-exact
 });
+
+test("matchAnswer tolerates adjacent-letter transposition typos", () => {
+  assert.equal(editDistance("reisling", "riesling"), 1);
+  assert.equal(matchAnswer("reisling", ["Riesling"]).correct, true);
+});
+
+test("matchAnswer rejects a same-length similar grape (no false positive)", () => {
+  assert.equal(matchAnswer("Pinot Gris", ["Pinot Noir"]).correct, false);
+});
+
+test("matchAnswer returns the matched alias", () => {
+  assert.equal(matchAnswer("Shiraz", ["Syrah / Shiraz"]).matched, "shiraz");
+});
