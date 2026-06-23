@@ -10,7 +10,8 @@ export default function ClimatePage() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-display text-3xl font-semibold">Climate comparator</h1>
+        <p className="kicker">Climate</p>
+        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Climate comparator</h1>
         <p className="mt-1 text-muted">
           Same grape, two climates. Cooler sites keep acidity and green/restrained fruit; warmer
           sites give riper, fuller, higher-alcohol wines. Pick a variety:
@@ -33,7 +34,7 @@ export default function ClimatePage() {
 
       <section className="card p-5">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-          <h2 className="font-display text-2xl font-semibold">{v.name}</h2>
+          <h2 className="font-display text-2xl font-semibold text-ink">{v.name}</h2>
           <span className="text-sm text-muted">{v.summary}</span>
         </div>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
@@ -45,27 +46,27 @@ export default function ClimatePage() {
       </section>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <div className="flex items-center gap-2 text-slate-700">
+        <article className="card bg-card p-5">
+          <div className="flex items-center gap-2 text-ink">
             <span className="text-xl" aria-hidden>❄️</span>
-            <h3 className="font-display text-lg font-semibold">Cool climate</h3>
+            <h3 className="kicker">Cool climate</h3>
           </div>
-          <p className="mt-2 text-sm text-slate-700">{c.cool}</p>
+          <p className="mt-2 text-sm text-ink">{c.cool}</p>
           {c.coolExample && (
-            <p className="mt-3 text-xs font-medium uppercase tracking-wide text-slate-500">
+            <p className="mt-3 text-xs font-medium uppercase tracking-wide text-muted">
               e.g. {c.coolExample}
             </p>
           )}
         </article>
 
-        <article className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-          <div className="flex items-center gap-2 text-amber-800">
+        <article className="card bg-blush p-5">
+          <div className="flex items-center gap-2 text-ink">
             <span className="text-xl" aria-hidden>☀️</span>
-            <h3 className="font-display text-lg font-semibold">Warm climate</h3>
+            <h3 className="kicker">Warm climate</h3>
           </div>
-          <p className="mt-2 text-sm text-amber-900">{c.warm}</p>
+          <p className="mt-2 text-sm text-ink">{c.warm}</p>
           {c.warmExample && (
-            <p className="mt-3 text-xs font-medium uppercase tracking-wide text-amber-700">
+            <p className="mt-3 text-xs font-medium uppercase tracking-wide text-muted">
               e.g. {c.warmExample}
             </p>
           )}
