@@ -55,7 +55,8 @@ export default function ExplorePage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="font-display text-3xl font-semibold">Grape &amp; region explorer</h1>
+        <p className="kicker">Explore</p>
+        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Grape &amp; region explorer</h1>
         <p className="mt-1 text-muted">
           Every variety in the syllabus — its style, key regions and label terms. Switch to{" "}
           <em>Regions</em> to go the other way: pick a place, see its grapes.
@@ -102,11 +103,11 @@ export default function ExplorePage() {
             <button
               key={v.id}
               onClick={() => setSelected(v.id)}
-              className="card group p-4 text-left transition hover:-translate-y-0.5 hover:border-wine"
+              className="card group p-4 text-left transition hover:border-wine"
             >
               <div className="flex items-center gap-2">
                 <Dot colour={v.colour} />
-                <h3 className="font-display text-lg font-semibold group-hover:text-wine">{v.name}</h3>
+                <h3 className="font-display text-lg font-semibold text-ink group-hover:text-wine">{v.name}</h3>
               </div>
               <p className="mt-1 line-clamp-2 text-sm text-muted">{v.summary}</p>
               <div className="mt-2 flex flex-wrap gap-1">
@@ -171,9 +172,7 @@ function Filter<T extends string>({
         <button
           key={o}
           onClick={() => setValue(o)}
-          className={`rounded-full px-2.5 py-1 capitalize transition ${
-            value === o ? "bg-wine text-white" : "border border-line bg-card text-muted hover:border-wine"
-          }`}
+          className={value === o ? "btn-primary capitalize" : "btn-ghost capitalize text-muted"}
         >
           {o}
         </button>
@@ -202,7 +201,7 @@ function VarietyDetail({ v, onClose }: { v: Variety; onClose: () => void }) {
           <div>
             <div className="flex items-center gap-2">
               <Dot colour={v.colour} />
-              <h2 className="font-display text-2xl font-semibold">{v.name}</h2>
+              <h2 className="font-display text-2xl font-semibold text-ink">{v.name}</h2>
             </div>
             <span className="chip mt-1">
               {v.tier === "principal" ? "Principal (LO3)" : "Regional (LO4)"} · {v.colour}
@@ -223,7 +222,7 @@ function VarietyDetail({ v, onClose }: { v: Variety; onClose: () => void }) {
         </div>
 
         <div className="mt-4">
-          <h3 className="text-sm font-semibold text-wine">Aromas &amp; flavours</h3>
+          <h3 className="kicker">Aromas &amp; flavours</h3>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
             {v.aromas.map((a) => (
               <span key={a} className="chip">{a}</span>
@@ -232,7 +231,7 @@ function VarietyDetail({ v, onClose }: { v: Variety; onClose: () => void }) {
         </div>
 
         <div className="mt-4">
-          <h3 className="text-sm font-semibold text-wine">Key regions &amp; GIs</h3>
+          <h3 className="kicker">Key regions &amp; GIs</h3>
           <div className="mt-1.5 space-y-1 text-sm">
             {[...byCountry.entries()].map(([country, gis]) => (
               <div key={country} className="flex gap-2">
@@ -245,7 +244,7 @@ function VarietyDetail({ v, onClose }: { v: Variety; onClose: () => void }) {
 
         {v.terms && v.terms.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-sm font-semibold text-wine">Labelling terms</h3>
+            <h3 className="kicker">Labelling terms</h3>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {v.terms.map((t) => (
                 <span key={t} className="chip border-wine/30 bg-blush text-wine">{t}</span>
@@ -256,11 +255,11 @@ function VarietyDetail({ v, onClose }: { v: Variety; onClose: () => void }) {
 
         {v.climate && (
           <div className="mt-4 grid gap-2 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
+            <div className="rounded-xl border border-line bg-card p-3 text-sm text-ink">
               <p className="font-semibold">❄️ Cool</p>
               <p className="mt-1">{v.climate.cool}</p>
             </div>
-            <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+            <div className="rounded-xl border border-line bg-blush p-3 text-sm text-ink">
               <p className="font-semibold">☀️ Warm</p>
               <p className="mt-1">{v.climate.warm}</p>
             </div>
