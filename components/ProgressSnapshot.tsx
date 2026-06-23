@@ -9,7 +9,8 @@ export function ProgressSnapshot() {
 
   return (
     <section className="card p-5">
-      <h2 className="font-display text-lg font-semibold">Your progress</h2>
+      <p className="kicker">Your progress</p>
+      <h2 className="mt-1 font-display text-lg font-semibold text-ink">Accuracy by Learning Outcome</h2>
       <p className="mt-1 text-sm text-muted">
         {!ready ? (
           "Loading…"

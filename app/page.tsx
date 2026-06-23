@@ -17,22 +17,22 @@ export default function Home() {
   return (
     <div className="space-y-10">
       {/* Hero */}
-      <section className="pt-4">
-        <p className="chip">Exam: early July 2026 · pass 55%</p>
-        <h1 className="mt-3 font-display text-4xl font-semibold leading-tight sm:text-5xl">
+      <section className="pt-2">
+        <p className="kicker">Award in Wines · Exam July 2026 · pass 55%</p>
+        <h1 className="mt-3 font-display text-4xl font-medium leading-[1.07] tracking-[-0.015em] sm:text-5xl">
           WSET Level&nbsp;2,
           <br />
-          <span className="text-wine">made navigable.</span>
+          <em className="not-italic font-medium text-ink">made navigable.</em>
         </h1>
-        <p className="mt-3 max-w-xl text-muted">
+        <p className="mt-4 max-w-xl text-muted">
           A study companion for the Award in Wines — every grape, region, label term and practice
           question, grounded in your verified syllabus notes. Nothing invented.
         </p>
-        <div className="mt-5 flex flex-wrap gap-3">
+        <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/quiz" className="btn-primary">Start a quiz →</Link>
           <Link href="/explore" className="btn-ghost">Explore the grapes</Link>
         </div>
-        <div className="mt-6 flex flex-wrap gap-2 text-xs text-muted">
+        <div className="mt-6 flex flex-wrap gap-2">
           <span className="chip">{VARIETIES.length} grape varieties</span>
           <span className="chip">{TERMS.length} label terms</span>
           <span className="chip">{QUESTIONS.length} quiz questions</span>
@@ -41,10 +41,11 @@ export default function Home() {
 
       {/* Where the marks are */}
       <section className="card p-5 sm:p-6">
-        <h2 className="font-display text-xl font-semibold">Where the marks are</h2>
+        <p className="kicker">Where the marks are</p>
+        <h2 className="mt-2 font-display text-xl font-semibold text-ink">Spend your time on grapes &amp; regions</h2>
         <p className="mt-1 text-sm text-muted">
           50 questions, 1 mark each. Grapes &amp; their regions (LO3 + LO4) are{" "}
-          <strong className="text-ink">62% of the exam</strong> — spend your time there.
+          <strong className="text-ink">62% of the exam</strong>.
         </p>
         <ul className="mt-4 space-y-1.5">
           {CONCEPTS.map((c) => {
@@ -75,18 +76,18 @@ export default function Home() {
 
       {/* Feature grid */}
       <section>
-        <h2 className="mb-3 font-display text-xl font-semibold">Five ways to study</h2>
+        <p className="kicker mb-3">Five ways to study</p>
         <div className="grid gap-3 sm:grid-cols-2">
           {FEATURES.map((f) => (
             <Link
               key={f.href}
               href={f.href}
-              className="card group p-5 transition hover:-translate-y-0.5 hover:border-wine"
+              className="card group p-5 transition hover:border-wine"
             >
               <div className="flex items-start gap-3">
                 <span className="text-2xl" aria-hidden>{f.emoji}</span>
                 <div>
-                  <h3 className="font-display text-lg font-semibold group-hover:text-wine">{f.title}</h3>
+                  <h3 className="font-display text-lg font-semibold text-ink group-hover:text-wine">{f.title}</h3>
                   <p className="mt-0.5 text-sm text-muted">{f.desc}</p>
                 </div>
               </div>
