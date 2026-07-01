@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test src/lib/*.test.ts",
     "build:embeddings": "node --env-file-if-exists=.env.local scripts/build-embeddings.ts"
   },
   "dependencies": {

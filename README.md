@@ -1,6 +1,8 @@
 # WSET 2 Study Companion
 
 [![Live demo](https://img.shields.io/badge/demo-live-b91c4a?style=flat-square)](https://wset-app-umber.vercel.app)
+[![CI](https://github.com/chrisamber/wset-2-study-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/chrisamber/wset-2-study-companion/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-149eca?style=flat-square&logo=react)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
@@ -18,6 +20,14 @@ A study app for the WSET Level 2 Award in Wines exam — built for a real person
 - **Quiz** — 45 scored multiple-choice questions covering grape-to-region associations and tasting logic, graded against the exam's real pass/merit/distinction thresholds.
 - **Ask the Sommelier** — a free-form chat that answers wine questions grounded in the app's own grape data, using retrieval-augmented generation (RAG). Ask it something outside that data and it says so, instead of making something up.
 
+## Screenshots
+
+**Quiz**
+![Quiz tab screenshot](public/screenshots/quiz.png)
+
+**Ask the Sommelier**
+![Ask the Sommelier tab screenshot](public/screenshots/ask.png)
+
 ## Why it exists
 
 Built for Zeal, an Assistant Manager studying for her WSET Level 2 exam, scoped around one fact from the syllabus: grape varieties and their regions make up 62% of the exam. The app deliberately covers that ground well rather than the whole syllabus shallowly.
@@ -29,6 +39,17 @@ Built for Zeal, an Assistant Manager studying for her WSET Level 2 exam, scoped 
 **Ask the Sommelier — retrieval, sized to the corpus:**
 
 The retrieval corpus is 21 grape entries — small enough that a hosted vector database would be pure overhead. Instead:
+
+```mermaid
+flowchart LR
+    A["grapes.ts<br/>(21 entries)"] --> B["build-embeddings.ts<br/>(build time)"]
+    B --> C["grape-embeddings.json<br/>(committed)"]
+    D["User question"] --> E["Voyage AI<br/>embed question"]
+    E --> F["Cosine similarity<br/>vs 21 vectors"]
+    C --> F
+    F --> G["Claude<br/>via AI Gateway"]
+    G --> H["Grounded answer"]
+```
 
 1. A one-off build script (`scripts/build-embeddings.ts`) embeds each grape's data with Voyage AI and writes the vectors to a committed static JSON file (`src/data/grape-embeddings.json`).
 2. At request time, the API route (`src/app/api/chat/route.ts`) embeds the user's question, ranks it against those 21 vectors with plain cosine similarity (no library — it's about ten lines of math), and passes the top matches to Claude as grounding context.
