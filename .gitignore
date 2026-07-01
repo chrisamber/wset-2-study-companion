@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agentic dev scratch (subagent-driven-development progress ledger)
+.superpowers/
