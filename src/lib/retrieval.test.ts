@@ -10,6 +10,18 @@ test("cosineSimilarity returns 0 for orthogonal vectors", () => {
   assert.equal(cosineSimilarity([1, 0], [0, 1]), 0);
 });
 
+test("cosineSimilarity throws on mismatched-length vectors", () => {
+  assert.throws(() => cosineSimilarity([1, 0], [1, 0, 0]));
+});
+
+test("cosineSimilarity throws on empty vectors", () => {
+  assert.throws(() => cosineSimilarity([], []));
+});
+
+test("cosineSimilarity returns 0 for a zero vector instead of NaN", () => {
+  assert.equal(cosineSimilarity([0, 0], [1, 0]), 0);
+});
+
 test("topMatches ranks the closest vector first and respects k", () => {
   const records = [
     { name: "far", embedding: [0, 1] },

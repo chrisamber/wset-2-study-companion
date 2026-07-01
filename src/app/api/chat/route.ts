@@ -38,7 +38,12 @@ export async function POST(req: Request) {
     });
   }
 
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  let messages: UIMessage[];
+  try {
+    ({ messages } = await req.json());
+  } catch {
+    return new Response("Malformed request body.", { status: 400 });
+  }
   const question = latestQuestionText(messages);
 
   if (!question) {
