@@ -1,8 +1,16 @@
 # WSET 2 Study Companion
 
+[![Live demo](https://img.shields.io/badge/demo-live-b91c4a?style=flat-square)](https://wset-app-umber.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19-149eca?style=flat-square&logo=react)](https://react.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
+[![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-d97757?style=flat-square)](#built-with-claude-code)
+
 A study app for the WSET Level 2 Award in Wines exam — built for a real person studying for a real exam, then packaged up as a small case study in scoped, judgment-driven engineering.
 
 **Live demo:** https://wset-app-umber.vercel.app
+
+![Study tab screenshot](public/screenshots/study.png)
 
 ## What it does
 
