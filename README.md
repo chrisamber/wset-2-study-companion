@@ -7,7 +7,7 @@ A study app for the WSET Level 2 Award in Wines exam — built for a real person
 ## What it does
 
 - **Study** — flippable cards for all 21 grape varieties on the WSET Level 2 syllabus (body, acidity, tannin, aromas, regions, food pairings).
-- **Quiz** — 50 scored multiple-choice questions covering grape-to-region associations and tasting logic, graded against the exam's real pass/merit/distinction thresholds.
+- **Quiz** — 45 scored multiple-choice questions covering grape-to-region associations and tasting logic, graded against the exam's real pass/merit/distinction thresholds.
 - **Ask the Sommelier** — a free-form chat that answers wine questions grounded in the app's own grape data, using retrieval-augmented generation (RAG). Ask it something outside that data and it says so, instead of making something up.
 
 ## Why it exists
