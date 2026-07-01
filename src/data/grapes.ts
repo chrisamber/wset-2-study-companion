@@ -1,6 +1,6 @@
 export type Grape = {
   name: string;
-  tier: "principal" | "regional";
+  tier: "principal" | "regional" | "sparkling";
   color: "white" | "red";
   dot: string;
   body: string;
@@ -126,7 +126,7 @@ export const GRAPES: Grape[] = [
   },
   {
     name: "Muscat",
-    tier: "regional",
+    tier: "sparkling",
     color: "white",
     dot: "#E8D8B0",
     body: "Light to medium",
@@ -290,6 +290,9 @@ export const PRINCIPAL_WHITES = GRAPES.filter(
 );
 export const REGIONAL_WHITES = GRAPES.filter(
   (g) => g.color === "white" && g.tier === "regional"
+);
+export const SPARKLING_WHITES = GRAPES.filter(
+  (g) => g.color === "white" && g.tier === "sparkling"
 );
 export const PRINCIPAL_REDS = GRAPES.filter(
   (g) => g.color === "red" && g.tier === "principal"

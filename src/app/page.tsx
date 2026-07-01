@@ -5,6 +5,7 @@ import { useChat } from "@ai-sdk/react";
 import {
   PRINCIPAL_WHITES,
   REGIONAL_WHITES,
+  SPARKLING_WHITES,
   PRINCIPAL_REDS,
   REGIONAL_REDS,
   type Grape,
@@ -19,7 +20,7 @@ const BREAKDOWN = [
   { n: 13, label: "Other", color: "#CCC7BF", pct: 26 },
 ];
 
-function GrapeCard({ name, dot, regions, notes, body, acidity, tannin, aromas, pairings, tier }: Grape & { tier: string }) {
+function GrapeCard({ name, dot, regions, notes, body, acidity, tannin, aromas, pairings }: Grape) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -75,6 +76,11 @@ function StudyPanel() {
 
       <SectionLabel>white · regional (LO4 — 12 marks)</SectionLabel>
       {REGIONAL_WHITES.map((g) => (
+        <GrapeCard key={g.name} {...g} />
+      ))}
+
+      <SectionLabel>white · sparkling &amp; fortified (LO5 — 6 marks)</SectionLabel>
+      {SPARKLING_WHITES.map((g) => (
         <GrapeCard key={g.name} {...g} />
       ))}
 
