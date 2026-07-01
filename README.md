@@ -1,6 +1,7 @@
 # WSET 2 Study Companion
 
 [![Live demo](https://img.shields.io/badge/demo-live-b91c4a?style=flat-square)](https://wset-app-umber.vercel.app)
+[![CI](https://github.com/chrisamber/wset-2-study-companion/actions/workflows/ci.yml/badge.svg)](https://github.com/chrisamber/wset-2-study-companion/actions/workflows/ci.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-149eca?style=flat-square&logo=react)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
