@@ -12,16 +12,18 @@ import { voyageEmbed } from "@/lib/embeddings";
 import { isRateLimited, latestQuestionText } from "@/lib/chat-helpers";
 
 // Gateway-style "provider/model-id" string — no @ai-sdk/anthropic import needed.
-// Authenticated via AI_GATEWAY_API_KEY locally, or automatically via Vercel's
-// OIDC token once deployed (no key required in that case).
+// Authenticated via AI_GATEWAY_API_KEY, set as an env var both locally and in
+// production. (Vercel's docs describe automatic OIDC auth in production with
+// no key needed; testing the live deployment showed that didn't hold here,
+// so this repo sets the key explicitly in both environments.)
 const CHAT_MODEL = process.env.SOMMELIER_MODEL || "anthropic/claude-sonnet-4-6";
 const TOP_K = 5;
 const MAX_QUESTION_LENGTH = 500;
 
 export async function POST(req: Request) {
-  // Only Voyage is checked here — the Gateway can authenticate via Vercel's
-  // OIDC token in production with no static key present, so a missing
-  // AI_GATEWAY_API_KEY isn't necessarily a misconfiguration.
+  // Only Voyage is checked here — a missing AI_GATEWAY_API_KEY surfaces later,
+  // inside the stream's onError handler below, since the Gateway call itself
+  // is what fails.
   if (!process.env.VOYAGE_API_KEY) {
     return new Response(
       "Ask the Sommelier isn't configured yet — missing VOYAGE_API_KEY.",
