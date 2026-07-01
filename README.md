@@ -32,6 +32,17 @@ Built for Zeal, an Assistant Manager studying for her WSET Level 2 exam, scoped 
 
 The retrieval corpus is 21 grape entries — small enough that a hosted vector database would be pure overhead. Instead:
 
+```mermaid
+flowchart LR
+    A["grapes.ts<br/>(21 entries)"] --> B["build-embeddings.ts<br/>(build time)"]
+    B --> C["grape-embeddings.json<br/>(committed)"]
+    D["User question"] --> E["Voyage AI<br/>embed question"]
+    E --> F["Cosine similarity<br/>vs 21 vectors"]
+    C --> F
+    F --> G["Claude<br/>via AI Gateway"]
+    G --> H["Grounded answer"]
+```
+
 1. A one-off build script (`scripts/build-embeddings.ts`) embeds each grape's data with Voyage AI and writes the vectors to a committed static JSON file (`src/data/grape-embeddings.json`).
 2. At request time, the API route (`src/app/api/chat/route.ts`) embeds the user's question, ranks it against those 21 vectors with plain cosine similarity (no library — it's about ten lines of math), and passes the top matches to Claude as grounding context.
 3. Claude is instructed to answer only from that context, and to say so plainly when a question falls outside it.
