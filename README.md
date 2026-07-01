@@ -16,9 +16,9 @@ A study app for the WSET Level 2 Award in Wines exam — built for a real person
 
 ## What it does
 
-- **Study** — flippable cards for all 21 grape varieties on the WSET Level 2 syllabus (body, acidity, tannin, aromas, regions, food pairings).
+- **Study** — flippable cards for 21 grape varieties, prioritized by exam weight: all 8 LO3 "principal" grapes, the highest-yield LO4 "regional" grapes, plus Muscat for LO5 sparkling/fortified (body, acidity, tannin, aromas, regions, food pairings). Not the full syllabus — see [Why it exists](#why-it-exists).
 - **Quiz** — 45 scored multiple-choice questions covering grape-to-region associations and tasting logic, graded against the exam's real pass/merit/distinction thresholds.
-- **Ask the Sommelier** — a free-form chat that answers wine questions grounded in the app's own grape data, using retrieval-augmented generation (RAG). Ask it something outside that data and it says so, instead of making something up.
+- **Ask the Sommelier** — a free-form chat that answers wine questions grounded in the app's own grape data, using retrieval-augmented generation (RAG). Ask it something outside that data and it says so, instead of making something up. Questions are sent to Voyage AI and Claude (via the Vercel AI Gateway) to generate answers.
 
 ## Screenshots
 
