@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useChat } from "@ai-sdk/react";
 import {
   PRINCIPAL_WHITES,
   REGIONAL_WHITES,
@@ -226,8 +227,77 @@ function QuizPanel() {
   );
 }
 
+function SommelierPanel() {
+  const [input, setInput] = useState("");
+  const { messages, sendMessage, status, error } = useChat();
+
+  return (
+    <>
+      <div className="mb-5">
+        <h2 className="font-['Instrument_Serif'] text-xl leading-snug mb-1.5">
+          Ask the Sommelier
+        </h2>
+        <p className="text-[13px] text-[#8C837A]">
+          Ask about any of the 21 grapes above — answers are grounded in the notes on this page.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3 mb-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`max-w-[85%] rounded-[10px] px-3.5 py-3 text-[13px] leading-relaxed ${
+              message.role === "user"
+                ? "self-end bg-[#9B3B53] text-white"
+                : "self-start bg-[#F5F0EB] border border-[#ECE9E3] text-[#1C1917]"
+            }`}
+          >
+            {message.parts.map((part, i) =>
+              part.type === "text" ? <span key={i}>{part.text}</span> : null
+            )}
+          </div>
+        ))}
+
+        {status === "submitted" && (
+          <div className="text-[11px] text-[#8C837A] pl-1">Thinking…</div>
+        )}
+
+        {error && (
+          <div className="bg-[rgba(196,75,75,0.06)] border border-[rgba(196,75,75,0.25)] text-[#C44B4B] rounded-[10px] px-3.5 py-3 text-[12px]">
+            Something went wrong — try again in a moment.
+          </div>
+        )}
+      </div>
+
+      <form
+        className="flex gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!input.trim()) return;
+          sendMessage({ text: input });
+          setInput("");
+        }}
+      >
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="e.g. What's the difference between Syrah and Shiraz?"
+          className="flex-1 bg-white border border-[#ECE9E3] rounded-full px-4 py-2.5 text-[13px] focus:outline-none focus:border-[rgba(155,59,83,0.4)]"
+        />
+        <button
+          type="submit"
+          disabled={status === "streaming" || status === "submitted"}
+          className="bg-[#9B3B53] text-white px-5 py-2.5 rounded-full text-xs font-semibold hover:brightness-110 transition-all disabled:opacity-40"
+        >
+          Ask
+        </button>
+      </form>
+    </>
+  );
+}
+
 export default function Home() {
-  const [tab, setTab] = useState<"study" | "quiz">("study");
+  const [tab, setTab] = useState<"study" | "quiz" | "ask">("study");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -238,7 +308,7 @@ export default function Home() {
             <span className="text-[#9B3B53]">◆</span> WSET 2
           </div>
           <div className="flex items-center gap-1">
-            {(["study", "quiz"] as const).map((t) => (
+            {(["study", "quiz", "ask"] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
@@ -303,7 +373,7 @@ export default function Home() {
       {/* Panel */}
       <div className="flex-1 border-t border-[#ECE9E3]">
         <div className="max-w-3xl mx-auto px-6 py-5">
-          {tab === "study" ? <StudyPanel /> : <QuizPanel />}
+          {tab === "study" ? <StudyPanel /> : tab === "quiz" ? <QuizPanel /> : <SommelierPanel />}
         </div>
       </div>
     </div>
