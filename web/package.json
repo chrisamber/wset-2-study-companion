@@ -4,10 +4,10 @@
   "description": "Decant — an open-source, factually-grounded study companion for the WSET Level 2 Award in Wines. Explore grapes, decode labels, compare climates, and quiz yourself.",
   "license": "MIT",
   "author": "Chris Amber",
-  "homepage": "https://github.com/chrisamber/decant#readme",
+  "homepage": "https://github.com/chrisamber/wset-2-study-companion#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chrisamber/decant.git"
+    "url": "https://github.com/chrisamber/wset-2-study-companion.git"
   },
   "keywords": [
     "wset",
