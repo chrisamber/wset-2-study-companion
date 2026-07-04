@@ -4,7 +4,7 @@
 
 Explore grape varieties, decode wine labels, compare cool- vs warm-climate styles, drill the confusable pairs WSET loves to test, and quiz yourself against the exam structure — all in a fast, offline-friendly web app.
 
-🔗 **Live demo:** https://wset-app-umber.vercel.app
+🔗 **Live demo:** https://decant-wines.vercel.app
 
 > **Not affiliated with WSET.** Decant is an independent, fan-made study aid. It is not affiliated with, endorsed by, or sponsored by the Wine & Spirit Education Trust. See [Disclaimer](#disclaimer).
 
