@@ -1,0 +1,6 @@
+# Python deps for the WSET-2 semantic-search (/vq) tooling. Pinned to the
+# versions in embeddings/.venv (Python 3.11 — voyageai 0.3.7 requires <3.14).
+# Regenerate with: .venv/bin/python -m pip freeze
+voyageai==0.3.7          # voyage-4 embeddings + rerank-2.5
+psycopg2-binary==2.9.12  # Postgres/pgvector client
+python-dotenv==1.2.2     # loads embeddings/.env
