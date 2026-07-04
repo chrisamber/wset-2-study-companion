@@ -5,9 +5,6 @@
 /inbox/
 /clippings/
 
-# Temporary exclusion while the nested repository is imported
-/app/
-
 # Secrets and local environments
 .env
 .env.*

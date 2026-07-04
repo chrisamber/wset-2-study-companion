@@ -10,7 +10,7 @@ An open-source WSET Level 2 wine study pack — Obsidian vault, web app, and sem
 | Directory | Description |
 |-----------|-------------|
 | [`wiki/`](wiki/) | Obsidian study notes — varieties, concepts, foundation, practice exams, reference docs. Start at [`index.md`](wiki/index.md). |
-| [`app/`](app/) | Next.js 16 web app (Learn / Explore / Decode / Climate / Quiz). [Live demo](https://wset-app-umber.vercel.app). Has its own README. |
+| [`web/`](web/) | Next.js 16 web app (Learn / Explore / Decode / Climate / Quiz). [Live demo](https://wset-app-umber.vercel.app). Has its own README. |
 | [`embeddings/`](embeddings/) | Semantic search over vault notes (Voyage AI + pgvector + Voyage rerank). |
 | `raw/` | Source reference material (gitignored — copyrighted). |
 
@@ -23,12 +23,12 @@ Open the repo root as a vault in [Obsidian](https://obsidian.md). Notes use wiki
 ### Run the web app
 
 ```sh
-cd app
+cd web
 npm install
 npm run dev
 ```
 
-Opens at `http://localhost:3000`. See [`app/README.md`](app/README.md) for details.
+Opens at `http://localhost:3000`. See [`web/README.md`](web/README.md) for details.
 
 ## Semantic search setup
 
