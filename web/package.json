@@ -1,0 +1,41 @@
+{
+  "name": "decant",
+  "version": "0.1.0",
+  "description": "Decant — an open-source, factually-grounded study companion for the WSET Level 2 Award in Wines. Explore grapes, decode labels, compare climates, and quiz yourself.",
+  "license": "MIT",
+  "author": "Chris Amber",
+  "homepage": "https://github.com/chrisamber/decant#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisamber/decant.git"
+  },
+  "keywords": [
+    "wset",
+    "wine",
+    "wset-level-2",
+    "study",
+    "quiz",
+    "nextjs"
+  ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "next": "16.2.9",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
