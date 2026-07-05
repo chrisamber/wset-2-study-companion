@@ -54,9 +54,9 @@ export default function ExplorePage() {
   const detail = selected ? varietyById(selected) : undefined;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 rise">
       <header>
-        <p className="kicker">Explore</p>
+        <div className="eyebrow mb-2">Explore</div>
         <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Grape &amp; region explorer</h1>
         <p className="mt-1 text-muted">
           Every variety in the syllabus — its style, key regions and label terms. Switch to{" "}
@@ -104,8 +104,9 @@ export default function ExplorePage() {
             <button
               key={v.id}
               onClick={() => setSelected(v.id)}
-              className="card group p-4 text-left transition hover:border-wine"
+              className="card group relative overflow-hidden p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:border-wine hover:shadow-[0_14px_30px_-18px_rgba(122,34,54,0.45)]"
             >
+              <span className="absolute left-0 top-0 h-full w-[3px] scale-y-0 bg-wine transition-transform duration-200 ease-out group-hover:scale-y-100" aria-hidden />
               <div className="flex items-center gap-2">
                 <Dot colour={v.colour} />
                 <h3 className="font-display text-lg font-semibold text-ink group-hover:text-wine">{v.name}</h3>

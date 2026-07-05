@@ -32,9 +32,9 @@ export default function DecodePage() {
   }, [filtered]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 rise">
       <header>
-        <p className="kicker">Decode</p>
+        <div className="eyebrow mb-2">Decode</div>
         <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Label decoder</h1>
         <p className="mt-1 text-muted">
           What the words on the bottle guarantee — quality tiers, ageing terms, sweetness and
