@@ -55,11 +55,13 @@
 }
 .wset-card--interactive {
   cursor: pointer;
-  transition: transform 0.15s var(--wset-ease), border-color 0.15s var(--wset-ease);
+  transition: transform 0.18s var(--wset-ease), border-color 0.18s var(--wset-ease),
+    box-shadow 0.18s var(--wset-ease);
 }
 .wset-card--interactive:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: var(--wset-wine);
+  box-shadow: 0 14px 30px -18px rgba(122, 34, 54, 0.45);
 }
 
 /* ── Chip ─────────────────────────────────────────────────────── */

@@ -6,7 +6,7 @@ export const metadata = { title: "Learn — WSET L2" };
 
 export default function LearnPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6 rise">
       <header>
         <div className="eyebrow mb-2">Learn</div>
         <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Learn the syllabus</h1>
@@ -18,7 +18,13 @@ export default function LearnPage() {
 
       <div className="space-y-6">
         {CONCEPTS.map((c) => (
-          <Card key={c.lo} className="p-5 sm:p-6">
+          <Card
+            key={c.lo}
+            className={`relative overflow-hidden p-5 sm:p-6 ${c.lo === 3 || c.lo === 4 ? "border-wine/25" : ""}`}
+          >
+            {(c.lo === 3 || c.lo === 4) && (
+              <span className="absolute left-0 top-0 h-full w-1 bg-wine" aria-hidden />
+            )}
             <div className="flex items-baseline justify-between gap-3">
               <h2 className="font-display text-xl font-semibold text-ink">
                 LO{c.lo} · {c.title}

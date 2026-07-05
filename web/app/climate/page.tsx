@@ -9,9 +9,9 @@ export default function ClimatePage() {
   const c = v.climate!;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 rise">
       <header>
-        <p className="kicker">Climate</p>
+        <div className="eyebrow mb-2">Climate</div>
         <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Climate comparator</h1>
         <p className="mt-1 text-muted">
           Same grape, two climates. Cooler sites keep acidity and green/restrained fruit; warmer

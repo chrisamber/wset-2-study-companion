@@ -251,9 +251,9 @@ export default function ConfusablesPage() {
   // ── Home screen ────────────────────────────────────────────────────────────
   if (!started) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 rise">
         <header>
-          <p className="kicker">Confusables</p>
+          <div className="eyebrow mb-2">Confusables</div>
           <h1 className="mt-2 font-display text-3xl font-semibold text-ink">The two-way trap trainer</h1>
           <p className="mt-1 max-w-2xl text-muted">
             WSET writes its hardest distractors as <em className="not-italic text-ink">lookalikes</em> — Sherry
@@ -289,9 +289,9 @@ export default function ConfusablesPage() {
   if (done) {
     const pct = answered ? Math.round((score / answered) * 100) : 0;
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 rise">
         <header>
-          <p className="kicker">Confusables</p>
+          <div className="eyebrow mb-2">Confusables</div>
           <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Drill complete</h1>
         </header>
         <section className="card p-6 text-center">
@@ -328,10 +328,10 @@ export default function ConfusablesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 rise">
       <header className="flex items-center justify-between gap-4">
         <div>
-          <p className="kicker">Confusables · {c.pair}</p>
+          <div className="eyebrow mb-2">Confusables · {c.pair}</div>
           <h1 className="mt-2 font-display text-2xl font-semibold text-ink">{c.context}</h1>
         </div>
         <div className="text-right text-sm text-muted tabular-nums">
