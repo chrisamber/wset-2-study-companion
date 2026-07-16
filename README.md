@@ -118,4 +118,4 @@ This project is **not affiliated with, endorsed by, or connected to** the Wine &
 
 ## Author
 
-**Chris Amber** — [amberaud.io](https://amberaud.io)
+**Chris Amber** — [chrisamber.dev](https://chrisamber.dev)
