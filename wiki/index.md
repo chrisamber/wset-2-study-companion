@@ -8,9 +8,7 @@ status: "#status/done"
 
 # WSET Level 2 Award in Wines — Study Pack
 
-Self-contained export (snapshot 2026-06-18) of all WSET L2 material. Open this folder as its own Obsidian vault. Study notes live in `wiki/`; their crawled web sources are in `raw/` (suffixed `-source`). Wikilinks resolve within this pack.
-
-> Snapshot only — the canonical, maintained copies live in the main `chris-obsidian` vault. Edits here do not flow back.
+Public snapshot (2026-06-18) of the WSET L2 study material. Open `wiki/` as an Obsidian vault. Wikilinks resolve by filename. Crawled source material belongs in `raw/` but is intentionally absent from public clones because it is copyrighted.
 
 **Exam weighting (50 MCQs, pass 55%):** LO1 = 5 · LO2 = 4 · **LO3 = 19 · LO4 = 12** · LO5 = 6 · LO6 = 4. Varieties + regions (LO3+LO4) = **62%** of the paper.
 
@@ -60,15 +58,14 @@ Self-contained export (snapshot 2026-06-18) of all WSET L2 material. Open this f
 [[wine-types]] · [[wine-serving-temperature]] · [[wine-food-pairing]]
 
 ## Practice
-- **`code/wset-app/`** — the full **interactive learning app** (Next.js): Learn, Explore (grapes & regions), Decode (labels), Climate comparator, and the Quiz. Run with `cd code/wset-app && npm run dev`. See `code/wset-app/README.md`.
-- **`code/quiz.html`** — standalone interactive quiz tool (open in any browser): exam mode (timed 50-Q paper) + practice mode (instant feedback, drill by LO), per-LO scoring, retry-your-misses, saved progress. Built from the mock exams below via `code/build_quiz.py`.
+- **`web/`** — the full **interactive learning app** (Next.js): Learn, Explore (grapes & regions), Decode (labels), Climate comparator, and the Quiz. Run with `cd web && npm run dev`. See `web/README.md`.
 - [[mock-exam]] — full 50-question mock exam (real format + weighting), with answer key and basis for each.
 - [[mock-exam-2]] — second 50-question mock exam (fresh questions, same weighting; independently fact-checked).
 - [[mock-exam-3]] — third 50-question mock exam (fresh questions and several less-drilled varieties; same weighting).
 
-## Specification (raw)
+## Specification sources
 - [[wset-l2-wines-spec]] — markdown rendering of the spec
-- `raw/wset-l2-wines-spec.pdf` — original PDF
+- `raw/wset-l2-wines-spec.pdf` — original PDF (not included in public clones)
 
 ---
-*All 26 notes are now `#status/done`. The 23 variety/concept stubs were filled from their `raw/` reference material on 2026-06-18 (analogy → mechanics → implications → misconceptions → related; every claim traceable to its source file).*
+*All 26 notes are now `#status/done`. The 23 variety/concept stubs were filled from source material on 2026-06-18 (analogy → mechanics → implications → misconceptions → related).*
