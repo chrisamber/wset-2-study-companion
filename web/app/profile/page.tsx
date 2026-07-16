@@ -49,13 +49,8 @@ export default function ProfilePage() {
     [principalOnly]
   );
 
-  const transition = (cb: () => void) => {
-    if (typeof document !== "undefined" && (document as any).startViewTransition) {
-      (document as any).startViewTransition(cb);
-    } else {
-      cb();
-    }
-  };
+  const transition = (update: () => void) =>
+    "startViewTransition" in document ? document.startViewTransition(update) : update();
 
   const changeScreen = (s: Screen) => {
     transition(() => setScreen(s));

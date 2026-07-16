@@ -1,6 +1,5 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import {
   makeSession,
   displayOptions,
@@ -42,13 +41,8 @@ export default function QuizPage() {
 
   const shuffle = ready ? progress.shuffle : true;
 
-  const transition = (cb: () => void) => {
-    if (typeof document !== "undefined" && (document as any).startViewTransition) {
-      (document as any).startViewTransition(cb);
-    } else {
-      cb();
-    }
-  };
+  const transition = (update: () => void) =>
+    "startViewTransition" in document ? document.startViewTransition(update) : update();
 
   const changeScreen = (s: Screen) => {
     transition(() => setScreen(s));

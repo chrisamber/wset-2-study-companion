@@ -5,7 +5,7 @@ import { VARIETIES } from "@/data/varieties";
 import { TERMS } from "@/data/terms";
 import { QUESTIONS } from "@/data/questions";
 import { ProgressSnapshot } from "@/components/ProgressSnapshot";
-import { Card, Button, Chip, ProgressBar } from "@/components/wset-ui";
+import { Card, Chip, ProgressBar } from "@/components/wset-ui";
 
 const FEATURES = [
   { href: "/learn", title: "Learn", desc: "The whole syllabus, one Learning Outcome at a time — with the marks each is worth." },

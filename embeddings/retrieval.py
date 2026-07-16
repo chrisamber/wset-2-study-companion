@@ -63,17 +63,6 @@ class RetrieveResult:
     diagnostics: dict = field(default_factory=dict)
 
 
-def ranked_slugs(hits: list[Hit]) -> list[str]:
-    """Collapse a ranked hit list to unique slugs, keeping first position."""
-    seen: set[str] = set()
-    out: list[str] = []
-    for h in hits:
-        if h.slug not in seen:
-            seen.add(h.slug)
-            out.append(h.slug)
-    return out
-
-
 def rrf_fuse(rankings: list[list], k: int = RRF_K,
              weights: list[float] | None = None) -> list[tuple]:
     """Reciprocal-rank fusion: each ranking contributes weight/(k + rank + 1)
@@ -125,26 +114,6 @@ def apply_tier_weights(hits: list, weights: dict | None) -> list:
                     h.text) for h in hits]
     rescored.sort(key=lambda h: (-h.score, h.slug, h.chunk_index))
     return rescored
-
-
-def parse_tier_weights_spec(spec: str | None) -> dict:
-    """Parse a 'tier=weight,tier=weight' override string into a weights dict,
-    merged over DEFAULT_TIER_WEIGHTS (only changed tiers need listing). A falsy
-    spec → a fresh copy of the default. Raises ValueError on malformed input.
-    Useful to callers that want to compare weighting configurations."""
-    weights = dict(DEFAULT_TIER_WEIGHTS)
-    if not spec or not spec.strip():
-        return weights
-    for part in spec.split(","):
-        tier, sep, val = part.partition("=")
-        tier, val = tier.strip(), val.strip()
-        if not sep or not tier or not val:
-            raise ValueError(f"bad tier-weight item {part!r} (want tier=weight)")
-        try:
-            weights[tier] = float(val)
-        except ValueError:
-            raise ValueError(f"bad tier-weight value in {part!r} (want a number)")
-    return weights
 
 
 def resolve_links(names: set[str], pages: list[tuple[str, str]],
@@ -284,19 +253,6 @@ def _or_query(query: str) -> str:
     return " or ".join(query.split())
 
 
-# CJK ranges (Hiragana/Katakana/CJK Unified + compat + fullwidth). The FTS leg
-# uses the 'english' text-search config, which collapses a CJK string to noise
-# and matches 0 chunks, so skip that dead leg explicitly.
-_CJK_RE = re.compile(
-    r"[　-〿぀-ヿ㐀-䶿一-鿿"
-    r"豈-﫿＀-￯]"
-)
-
-
-def _has_cjk(text: str) -> bool:
-    return bool(_CJK_RE.search(text))
-
-
 def _fts_rows(cur, query: str, k: int, scope=DEFAULT_SCOPE) -> list:
     sql, sp = _fts_sql(scope)
     try:
@@ -359,10 +315,7 @@ def retrieve(query: str, retrieve_k: int = RETRIEVE_K,
         for r in rows:
             texts[(r[0], r[1])] = r[2]
 
-    # The FTS leg uses the 'english' config, which matches nothing for a CJK
-    # query — skip the dead leg instead of silently degrading (A6-02).
-    cjk = _has_cjk(query)
-    do_fts = hybrid and not cjk
+    do_fts = hybrid
     fts_rows_total = 0
     if do_fts:
         for i, q in enumerate(queries):
@@ -380,8 +333,7 @@ def retrieve(query: str, retrieve_k: int = RETRIEVE_K,
         "hybrid": hybrid,
         "vector_rows": vector_rows,
         "fts_rows": fts_rows_total,
-        "fts_leg": ("skipped_cjk" if (hybrid and cjk)
-                    else "empty" if (do_fts and fts_rows_total == 0)
+        "fts_leg": ("empty" if (do_fts and fts_rows_total == 0)
                     else "active" if do_fts else "off"),
     }
 

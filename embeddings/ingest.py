@@ -16,7 +16,6 @@ DATABASE SCOPE — read before changing PGVECTOR_DB_URL:
 
 import hashlib
 import os
-import re
 import sys
 from pathlib import Path
 
@@ -25,20 +24,11 @@ import psycopg2
 import voyageai
 
 from chunking import (
-    VAULT_ROOT, SCOPE_ROOTS, IGNORE_PARTS, IGNORE_FILES, iter_markdown,
-    parse_title, chunk_by_heading, heading_of, breadcrumb, split_large_chunk,
-    build_chunks,
+    IGNORE_FILES, IGNORE_PARTS, SCOPE_ROOTS, VAULT_ROOT,
+    build_chunks, iter_markdown, parse_title,
 )
 
 EMBED_MODEL = "voyage-4"
-
-# Prune-safety guard (GAP-4 / VQ-003): the reindex targets the AUTHORITATIVE
-# Railway store and prunes rows whose slug is absent from local disk. If local
-# disk ever lags Railway, a naive prune would delete valid remote rows. Refuse
-# a prune that is both absolutely large and a big fraction of the store unless
-# --allow-prune is passed.
-PRUNE_ABS_FLOOR = 20
-PRUNE_FRAC_LIMIT = 0.10
 
 
 load_dotenv(Path(__file__).parent / ".env")

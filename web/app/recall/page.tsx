@@ -65,13 +65,8 @@ export default function RecallPage() {
   const total = regionIndex().length;
   const storedMisses = useMemo(() => (ready ? progress.recallMisses : []), [ready, progress.recallMisses]);
 
-  const transition = (cb: () => void) => {
-    if (typeof document !== "undefined" && (document as any).startViewTransition) {
-      (document as any).startViewTransition(cb);
-    } else {
-      cb();
-    }
-  };
+  const transition = (update: () => void) =>
+    "startViewTransition" in document ? document.startViewTransition(update) : update();
 
   const changeScreen = (s: Screen) => {
     transition(() => setScreen(s));
