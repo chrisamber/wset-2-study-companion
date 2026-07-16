@@ -5,13 +5,10 @@ Pass --force to clear content_hash on all pages and re-embed with the current mo
 Required when switching embed models (different models produce incompatible vector spaces).
 
 DATABASE SCOPE — read before changing PGVECTOR_DB_URL:
-    This script (and query.py / the /vq skill) own the WSET-2 vault's single
-    semantic index in the local `wset2brain` DB, embedded with voyage-4 and
-    reranked with rerank-2.5. It indexes the wiki/ study notes plus their raw/
-    reference material (see SCOPE_ROOTS / IGNORE_* in chunking.py). Because
-    wset2brain is dedicated to this vault, the prune block below is safe: it just
-    cleans up rows whose slug is no longer a file on disk. Do NOT point this at
-    the chris-obsidian `wikibrain` store.
+    This script owns Decant's semantic index, embedded with voyage-4. It indexes
+    the wiki/ study notes plus optional raw/ source material (see SCOPE_ROOTS /
+    IGNORE_* in chunking.py). Use a database dedicated to this checkout: the
+    opt-in prune block deletes indexed rows whose slug is no longer on disk.
 """
 
 import hashlib
@@ -35,8 +32,7 @@ load_dotenv(Path(__file__).parent / ".env")
 
 
 def _require_ssl(url: str) -> str:
-    """Pin sslmode=require so DB credentials never cross the public Railway TCP
-    proxy in cleartext (GAP-8 / VQ-029). An explicit sslmode is respected."""
+    """Require TLS unless the connection URL explicitly selects an sslmode."""
     if "sslmode=" in url:
         return url
     sep = "&" if "?" in url else "?"
@@ -46,9 +42,7 @@ def _require_ssl(url: str) -> str:
 def prune_decision(db_count: int, stale_count: int,
                    allow_override: bool = False) -> tuple[bool, str]:
     """Decide whether the prune block may delete `stale_count` rows.
-    Hard requirement (GAP-4 / VQ-003): no rows are deleted without an explicit
-    --allow-prune flag, regardless of size, to prevent accidental prunes on the
-    authoritative store."""
+    No rows are deleted without an explicit --allow-prune flag."""
     if stale_count <= 0:
         return True, "nothing to prune"
     if allow_override:
@@ -211,7 +205,7 @@ def main() -> None:
         print(f"  {slug} ({len(final_chunks)} chunks)")
 
     # Prune rows for pages no longer on disk (renames, deletions, old slug
-    # schemes) — guarded so a local-lags-Railway state can't mass-delete.
+    # schemes) — guarded so an incomplete local checkout cannot mass-delete.
     disk_slugs = {str(p.relative_to(VAULT_ROOT)) for p in md_files}
     cur.execute("SELECT slug FROM pages")
     db_slugs = [r[0] for r in cur.fetchall()]
@@ -226,9 +220,9 @@ def main() -> None:
             conn.close()
             sys.exit("Aborting before prune (see message above).")
 
-        # Loud warning banner for actual prune (GAP-4 / VQ-003)
+        # Loud warning banner for an actual prune.
         print("\n" + "!" * 80)
-        print("!!! WARNING: EXECUTING DESTRUCTIVE PRUNE IN AUTHORITATIVE DB !!!")
+        print("!!! WARNING: EXECUTING DESTRUCTIVE PRUNE IN CONFIGURED INDEX !!!")
         print(f"!!! Deleting {len(stale)} pages and their content chunks from the store.")
         print("!" * 80 + "\n")
 

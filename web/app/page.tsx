@@ -15,7 +15,7 @@ const FEATURES = [
   { href: "/confusables", title: "Confusables", desc: "The two-way trap trainer: pick between the lookalikes WSET pairs as distractors, see the one tell." },
   { href: "/recall", title: "Recall drill", desc: "Place → grape flashcards across every GI — the LO3+LO4 core that's 62% of the marks." },
   { href: "/profile", title: "Profile", desc: "Style → grape: read a hidden grape's structure & aromas, then name it. The reverse of Explore." },
-  { href: "/quiz", title: "Quiz", desc: "100 verified questions: timed exams or practice by LO, with instant feedback." },
+  { href: "/quiz", title: "Quiz", desc: `${QUESTIONS.length} verified questions: timed exams or practice by LO, with instant feedback.` },
 ];
 
 export default function Home() {

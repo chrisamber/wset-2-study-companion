@@ -22,7 +22,7 @@ An open-source WSET Level 2 wine study pack — Obsidian vault, web app, and sem
 
 Decant implements the **retrieval and evidence layer** of a RAG system. It
 deliberately stops before answer generation: the CLI returns inspectable source
-chunks and linked notes that a person or an LLM can use as grounded context.
+chunks and linked-note references that a person or an LLM can use as grounded context.
 
 ```mermaid
 flowchart LR
@@ -37,7 +37,7 @@ flowchart LR
     dense --> fusion["Weighted reciprocal-rank fusion"]
     lexical --> fusion
     fusion --> rerank["Voyage rerank-2.5"]
-    rerank --> evidence["Ranked chunks + neighbours + wikilinks"]
+    rerank --> evidence["Ranked chunks + neighbours + linked-note references"]
 ```
 
 | Stage | Implementation | Reasoning |
@@ -45,7 +45,7 @@ flowchart LR
 | Corpus and chunking | [`chunking.py`](embeddings/chunking.py) scans only `wiki/` and optional `raw/`, splits on level-two headings, bounds long sections, and prefixes each chunk with its title/section breadcrumb. | Keeps chunks semantically coherent while preserving document context. |
 | Embedding and indexing | [`ingest.py`](embeddings/ingest.py) uses Voyage 4's document input mode, batches requests, hashes source content, and skips unchanged pages. | Keeps document/query representations intentional and avoids unnecessary embedding cost. |
 | Candidate retrieval | [`retrieval.py`](embeddings/retrieval.py) runs pgvector cosine search and PostgreSQL full-text search, then combines rank lists with weighted reciprocal-rank fusion. Optional query variants are down-weighted. | Dense search recovers semantic matches; lexical search protects exact wine terms; rank fusion avoids comparing incompatible raw scores. |
-| Precision and evidence | Voyage `rerank-2.5` scores the fused candidates against the original question. [`query.py`](embeddings/query.py) can return neighbouring chunks, one-hop Obsidian links, JSON, and retrieval diagnostics. | Improves final precision while keeping every result inspectable and attributable to a source chunk. |
+| Precision and evidence | Voyage `rerank-2.5` scores the fused candidates against the original question. [`query.py`](embeddings/query.py) can return neighbouring chunks, one-hop linked-note references, JSON, and retrieval diagnostics. | Improves final precision while keeping every result inspectable and attributable to a source chunk. |
 | Operational safety | Database connections require TLS unless explicitly configured otherwise; SQL scopes are parameterised; destructive pruning is opt-in. | Retrieval quality work should not trade away credential or source-data safety. |
 
 **Current boundary:** this repository does not yet include an answer-generation
@@ -56,7 +56,7 @@ grounded generation without presenting generated prose as a sourced answer.
 
 ### Browse the notes
 
-Open the repo root as a vault in [Obsidian](https://obsidian.md). Notes use wikilinks (`[[note-slug]]`) and resolve by filename.
+Open [`wiki/`](wiki/) as a vault in [Obsidian](https://obsidian.md). Notes use wikilinks (`[[note-slug]]`) and resolve by filename.
 
 ### Run the web app
 
@@ -81,12 +81,17 @@ python3.11 -m venv embeddings/.venv
 embeddings/.venv/bin/pip install -r embeddings/requirements.txt
 ```
 
-2. Create a local Postgres database called `wset2brain` with the pgvector
-   extension enabled. The current snapshot expects the existing `pages` and
-   `content_chunks` schema used by the local index; schema bootstrap is not yet
-   packaged in the repository.
+2. Create a local Postgres database called `wset2brain`, then apply the bundled
+   pgvector schema (safe to run again):
 
-3. Create `embeddings/.env` with your Voyage AI API key and the Postgres connection URL. See `embeddings/ingest.py` for the expected variables.
+```sh
+createdb wset2brain
+psql "postgresql://localhost/wset2brain?sslmode=disable" -f embeddings/schema.sql
+```
+
+3. Copy `embeddings/.env.example` to `embeddings/.env` and add your Voyage AI
+   API key. The example URL explicitly disables TLS for local Postgres; remote
+   connections require TLS unless their URL selects another `sslmode`.
 
 4. Index the vault:
 

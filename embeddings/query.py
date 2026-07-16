@@ -40,7 +40,7 @@ def _fusion_rank(pre, slug, chunk_index):
 
 
 def _source_tier(slug: str) -> str:
-    """Top-level corpus tier a slug belongs to (wiki / raw / inbox / references)."""
+    """Top-level corpus tier a slug belongs to (wiki or raw)."""
     return slug.split("/", 1)[0] if "/" in slug else slug
 
 
