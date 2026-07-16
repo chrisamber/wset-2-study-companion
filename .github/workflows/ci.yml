@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: decant
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d decant"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      PGVECTOR_DB_URL: postgresql://postgres:postgres@localhost:5432/decant?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify Python
+        run: |
+          python -m compileall -q embeddings
+          python -m unittest discover -s embeddings -p 'test_*.py'
+      - name: Verify schema
+        run: |
+          psql "$PGVECTOR_DB_URL" -v ON_ERROR_STOP=1 -f embeddings/schema.sql
+          psql "$PGVECTOR_DB_URL" -v ON_ERROR_STOP=1 -f embeddings/schema.sql
+          test "$(psql "$PGVECTOR_DB_URL" -Atc "SELECT to_regclass('public.pages') IS NOT NULL AND to_regclass('public.content_chunks') IS NOT NULL AND to_regclass('public.pages_slug_key') IS NOT NULL AND to_regclass('public.content_chunks_slug_chunk_index_key') IS NOT NULL AND to_regclass('public.content_chunks_page_id_idx') IS NOT NULL AND to_regclass('public.content_chunks_embedding_idx') IS NOT NULL AND to_regclass('public.content_chunks_chunk_tsv_idx') IS NOT NULL")" = "t"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Verify web
+        working-directory: web
+        run: |
+          npm ci
+          npm run build

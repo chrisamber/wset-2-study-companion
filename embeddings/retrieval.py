@@ -25,20 +25,14 @@ RERANK_K = 5
 RRF_K = 60  # standard reciprocal-rank-fusion damping constant
 # Variant rank-lists count for less than the original query's in fusion, so an
 # off-intent rephrasing can ADD recall but not EVICT the original's hits from
-# the candidate pool (A4-1). 1.0 would restore the old equal-weight behaviour.
+# the candidate pool. 1.0 would restore equal-weight behaviour.
 VARIANT_RRF_WEIGHT = 0.5
 
-# VQ-022 — source-tier down-weight. Multipliers applied to a chunk's score by
-# its top-level path tier, so curated wiki/ answers win ties over noisy tiers
-# under --scope all. OPT-IN only; the default path is unweighted. The gentle
-# wiki boost favours curated notes without pushing dense raw sources out of the
-# candidate pool. An unlisted tier is neutral (1.0).
+# Opt-in source-tier weights let curated wiki/ answers win close rankings
+# without pushing dense raw/ sources out of the candidate pool.
 DEFAULT_TIER_WEIGHTS = {
     "wiki": 1.1,
-    "references": 1.0,
-    "projects": 0.95,
     "raw": 0.9,
-    "inbox": 0.6,
 }
 
 load_dotenv(Path(__file__).parent / ".env")
@@ -79,7 +73,7 @@ def rrf_fuse(rankings: list[list], k: int = RRF_K,
     """Reciprocal-rank fusion: each ranking contributes weight/(k + rank + 1)
     per key. `weights` (parallel to `rankings`, default all 1.0) lets variant
     rank-lists count for less than the original query's, so an off-intent
-    variant can ADD recall but not EVICT the original's hits (A4-1). Returns
+    variant can add recall without evicting the original's hits. Returns
     (key, score) sorted by fused score desc, key for stable ties."""
     if weights is None:
         weights = [1.0] * len(rankings)
@@ -91,7 +85,7 @@ def rrf_fuse(rankings: list[list], k: int = RRF_K,
 
 
 def tier_of(slug: str) -> str:
-    """Top-level path component = source tier (e.g. 'wiki', 'raw', 'inbox')."""
+    """Return the top-level corpus tier (wiki or raw)."""
     return slug.split("/", 1)[0] if "/" in slug else slug
 
 
@@ -106,7 +100,7 @@ def reweight_by_tier(scored: list, weights: dict | None) -> list:
     """Scale each ((slug, idx), score) by its source-tier weight and re-sort
     descending. No-op when `weights` is falsy. Pure — does not mutate input.
     Applied PRE-rerank (before the RETRIEVE_K cut), so it shapes the candidate
-    pool the reranker sees and can change which chunks survive (VQ-022)."""
+    pool the reranker sees and can change which chunks survive."""
     if not weights:
         return scored
     rescored = [(key, score * tier_weight(key[0], weights)) for key, score in scored]
@@ -116,9 +110,8 @@ def reweight_by_tier(scored: list, weights: dict | None) -> list:
 
 def apply_tier_weights(hits: list, weights: dict | None) -> list:
     """Scale each Hit.score by its source-tier weight and re-sort descending.
-    No-op when `weights` is falsy. Pure — returns a new list. Applied POST-rerank
-    to the final ranking that `metrics.raw_displacement` is computed over;
-    re-sorting the final K changes only order, never the top-K set (VQ-022)."""
+    No-op when `weights` is falsy. Pure — returns a new list. Applied post-rerank;
+    re-sorting the final K changes only order, never the top-K set."""
     if not weights:
         return hits
     rescored = [Hit(h.slug, h.chunk_index, h.score * tier_weight(h.slug, weights),
@@ -198,9 +191,7 @@ def page_titles(conn, slugs) -> dict[str, str]:
 
 
 def _require_ssl(url: str) -> str:
-    """Pin sslmode=require so DB credentials never cross the public Railway TCP
-    proxy in cleartext (GAP-8). An explicit sslmode already in the URL is
-    respected (so a deliberate sslmode=disable for a local socket still works)."""
+    """Require TLS unless the connection URL explicitly selects an sslmode."""
     if "sslmode=" in url:
         return url
     sep = "&" if "?" in url else "?"
@@ -208,8 +199,7 @@ def _require_ssl(url: str) -> str:
 
 
 def connect():
-    # RuntimeError (not SystemExit): SystemExit is a BaseException and would
-    # escape the MCP server's `except Exception` retry, tearing down the session.
+    # RuntimeError lets callers report configuration errors without a traceback.
     db_url = os.environ.get("PGVECTOR_DB_URL")
     if not db_url:
         raise RuntimeError("PGVECTOR_DB_URL not set")
@@ -269,11 +259,10 @@ def _fts_sql(scope):
     return sql, ([param] if param is not None else [])
 
 
-# Only short keyword-style queries get the OR fallback: ts_rank_cd has no
-# IDF weighting, so OR-ing a long conversational question floods the fusion
-# with chunks matching only its common words (measured: pre-rerank recall@1
-# 0.77 -> 0.34 on the conversational gold suite). Short queries are where
-# the lexical leg wins (exact names, identifiers, versions).
+# Only short keyword-style queries get the OR fallback: ts_rank_cd has no IDF
+# weighting, so OR-ing a long conversational question floods the fusion with
+# chunks matching only its common words. Short queries are where the lexical
+# leg wins (exact names, identifiers, versions).
 OR_FALLBACK_MAX_TERMS = 6
 
 
@@ -325,7 +314,7 @@ def retrieve(query: str, retrieve_k: int = RETRIEVE_K,
     clean_variants = [v.strip() for v in (variants or []) if v and v.strip()]
     if not query:
         # Nothing to embed or rerank against — Voyage rejects blank input, so
-        # short-circuit before any API/DB call (protects CLI, MCP, and eval).
+        # short-circuit before any API or database call.
         return RetrieveResult("", [], [], {"empty_query": True})
 
     own_conn = conn is None
@@ -360,7 +349,7 @@ def retrieve(query: str, retrieve_k: int = RETRIEVE_K,
             texts[(r[0], r[1])] = r[2]
 
     # The FTS leg uses the 'english' config, which matches nothing for a CJK
-    # query — skip the dead leg instead of silently degrading (A6-02).
+    # query, so skip that dead leg explicitly.
     cjk = _has_cjk(query)
     do_fts = hybrid and not cjk
     fts_rows_total = 0
@@ -385,9 +374,8 @@ def retrieve(query: str, retrieve_k: int = RETRIEVE_K,
                     else "active" if do_fts else "off"),
     }
 
-    # VQ-022: tier-weight the fused pool BEFORE the RETRIEVE_K cut so the
-    # candidate set the reranker sees is tier-shaped (can change which chunks
-    # survive). No-op when tier_weights is None (the default path).
+    # Apply tier weights before the RETRIEVE_K cut so they can shape the
+    # candidate set the reranker sees. No-op by default.
     fused = reweight_by_tier(rrf_fuse(rankings, weights=weights),
                              tier_weights)[:retrieve_k]
     pre = [Hit(slug, idx, score, texts[(slug, idx)])
@@ -403,8 +391,7 @@ def retrieve(query: str, retrieve_k: int = RETRIEVE_K,
             post.append(Hit(h.slug, h.chunk_index,
                             float(res.relevance_score), h.text))
 
-    # VQ-022: tier-weight the final ranking — the list metrics.raw_displacement
-    # (post-rerank) is computed over. Re-sorting changes order only, not the set.
+    # Apply the same weights post-rerank. Re-sorting changes order, not the set.
     post = apply_tier_weights(post, tier_weights)
 
     if own_conn:

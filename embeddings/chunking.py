@@ -21,12 +21,11 @@ IGNORE_PARTS = {
 }
 
 # Per-file ingest exclusions (slugs relative to VAULT_ROOT). Files listed here
-# stay on disk but out of the retrieval index. Used for the agent-instruction
-# files (not study content) and a stray duplicate of the mock exam parked in inbox/.
+# stay on disk but out of the retrieval index. Used for agent-instruction files,
+# which are not study content.
 IGNORE_FILES = {
     "CLAUDE.md",
     "AGENTS.md",
-    "inbox/mock-exam copy.md",
 }
 
 
