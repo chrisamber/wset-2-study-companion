@@ -11,15 +11,10 @@ from pathlib import Path
 # levels up (embeddings -> decant vault root).
 VAULT_ROOT = Path(__file__).parent.parent
 
-# The vault is organised into top-level corpus dirs: wiki/ (the curated study
-# notes, incl. the mock exams), raw/ (the dense crawled reference material),
-# inbox/ (unfiled captures), and clippings/ (web clips). We scan the whole vault
-# root recursively and lean on IGNORE_PARTS / IGNORE_FILES to drop everything
-# that isn't study content — the entire code/ tooling tree, the Obsidian app
-# folder, caches, etc. Slugs keep their dir prefix (`wiki/…`, `raw/…`), so `/vq`
-# can target a tier with --scope (e.g. --scope raw/), and query.py weights hits
-# by tier.
-SCOPE_ROOTS = [VAULT_ROOT]
+# Only study content belongs in the retrieval corpus. Keeping the roots explicit
+# prevents repository docs, web-app Markdown, and agent instructions from being
+# embedded when the monorepo grows. raw/ is optional in public clones.
+SCOPE_ROOTS = [VAULT_ROOT / "wiki", VAULT_ROOT / "raw"]
 IGNORE_PARTS = {
     ".git", ".claude", ".obsidian", ".trash", ".venv", "__pycache__",
     "code", "clippings", "node_modules", "dist",

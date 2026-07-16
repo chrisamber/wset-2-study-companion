@@ -90,16 +90,15 @@ def main() -> None:
     ap.add_argument("--no-hybrid", action="store_true",
                     help="vector-only retrieval (skip the FTS leg)")
     ap.add_argument("--scope", default=DEFAULT_SCOPE,
-                    help="restrict results to a slug prefix (default 'wiki/' — "
-                         "curated notes only). Use 'all' for the whole store, "
-                         "or e.g. 'raw/' to target raw sources.")
+                    help="restrict results to a slug prefix (default: whole "
+                         "indexed corpus). Use e.g. 'wiki/' for curated notes "
+                         "or 'raw/' for source material.")
     ap.add_argument("--all", action="store_true",
-                    help="search the whole store (raw/, inbox/, references/ too) "
-                         "— shorthand for --scope all")
+                    help="search the whole indexed corpus — shorthand for "
+                         "--scope all")
     ap.add_argument("--tier-weights", action="store_true",
-                    help="VQ-022 (experimental): down-weight noisy source tiers "
-                         "(raw/0.65, inbox/0.5) and boost wiki/1.15 so curated "
-                         "notes win ties. Mainly affects --all; off by default.")
+                    help="apply the configured source-tier weights so curated "
+                         "notes win close rankings; off by default")
     ap.add_argument("--top", type=int, default=8,
                     help="number of reranked hits to show (default 8)")
     ap.add_argument("--context", type=int, default=1,
