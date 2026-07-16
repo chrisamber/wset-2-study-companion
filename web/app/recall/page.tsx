@@ -5,6 +5,7 @@ import { GI_TO_GRAPE } from "@/data/terms";
 import { shuffled } from "@/lib/quiz-engine";
 import { useProgress } from "@/lib/progress";
 import { Card, Button, Chip, ProgressBar, QuizOption } from "@/components/wset-ui";
+import { FeatureHero } from "@/components/FeatureHero";
 
 type Mode = "mcq" | "reveal";
 type Screen = "home" | "run" | "done";
@@ -130,15 +131,18 @@ export default function RecallPage() {
     const missCount = storedMisses.length;
     return (
       <div className="space-y-6 rise">
-        <header>
-          <div className="eyebrow mb-2">Place → Grape</div>
-          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Recall drill</h1>
-          <p className="mt-2 text-muted text-[15px]">
+        <FeatureHero
+          eyebrow="Place → Grape"
+          title="Recall drill"
+          image="/feature-visuals/recall.jpg"
+          alt="A stack of blank recall cards beside a grape cluster and cork"
+        >
+          <p>
             The single most-tested association on the paper: a place comes up, you name the grape.
             All {total} GIs in your pack — the core of{" "}
             <strong className="text-wine">LO3 + LO4 (62% of the marks)</strong>.
           </p>
-        </header>
+        </FeatureHero>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Card

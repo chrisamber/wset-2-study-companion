@@ -5,6 +5,7 @@ import { VARIETIES } from "@/data/varieties";
 import { CONCEPTS } from "@/data/concepts";
 import { TERMS } from "@/data/terms";
 import type { Variety, Term, Concept } from "@/lib/types";
+import { FeatureHero } from "@/components/FeatureHero";
 
 // ────────────────────────────────────────────────────────────────────────────
 // CONFUSABLES — a two-way trap trainer.
@@ -252,15 +253,18 @@ export default function ConfusablesPage() {
   if (!started) {
     return (
       <div className="space-y-6 rise">
-        <header>
-          <div className="eyebrow mb-2">Confusables</div>
-          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">The two-way trap trainer</h1>
-          <p className="mt-1 max-w-2xl text-muted">
+        <FeatureHero
+          eyebrow="Confusables"
+          title="The two-way trap trainer"
+          image="/feature-visuals/confusables.jpg"
+          alt="Two similar red wines side by side with a two-way marker between them"
+        >
+          <p>
             WSET writes its hardest distractors as <em className="not-italic text-ink">lookalikes</em> — Sherry
             beside Port, cool Cabernet beside warm. Read a clue, pick between exactly the two, then see the one
             mechanic that tells them apart.
           </p>
-        </header>
+        </FeatureHero>
 
         <section className="card p-5">
           <p className="kicker">The {pairs.length} pairs you&apos;ll drill</p>

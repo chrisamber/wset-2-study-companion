@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { VARIETIES, regionIndex, varietyById } from "@/data/varieties";
 import type { Variety } from "@/lib/types";
 import { Scale } from "@/components/Scale";
+import { FeatureHero } from "@/components/FeatureHero";
 
 type Colour = "all" | "black" | "white";
 type Tier = "all" | "principal" | "regional";
@@ -55,14 +56,17 @@ export default function ExplorePage() {
 
   return (
     <div className="space-y-5 rise">
-      <header>
-        <div className="eyebrow mb-2">Explore</div>
-        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Grape &amp; region explorer</h1>
-        <p className="mt-1 text-muted">
+      <FeatureHero
+        eyebrow="Explore"
+        title={<>Grape &amp; region explorer</>}
+        image="/feature-visuals/explore.jpg"
+        alt="Red and white wine glasses beside dark and pale grape clusters"
+      >
+        <p>
           Every variety in the syllabus — its style, key regions and label terms. Switch to{" "}
           <em>Regions</em> to go the other way: pick a place, see its grapes.
         </p>
-      </header>
+      </FeatureHero>
 
       {/* Controls */}
       <div className="space-y-3">

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { CLIMATE_VARIETIES } from "@/data/varieties";
 import { Scale } from "@/components/Scale";
+import { FeatureHero } from "@/components/FeatureHero";
 
 export default function ClimatePage() {
   const [id, setId] = useState(CLIMATE_VARIETIES[0].id);
@@ -10,14 +11,17 @@ export default function ClimatePage() {
 
   return (
     <div className="space-y-6 rise">
-      <header>
-        <div className="eyebrow mb-2">Climate</div>
-        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Climate comparator</h1>
-        <p className="mt-1 text-muted">
+      <FeatureHero
+        eyebrow="Climate"
+        title="Climate comparator"
+        image="/feature-visuals/climate.jpg"
+        alt="Matching grape clusters lit by cool blue and warm golden light"
+      >
+        <p>
           Same grape, two climates. Cooler sites keep acidity and green/restrained fruit; warmer
           sites give riper, fuller, higher-alcohol wines. Pick a variety:
         </p>
-      </header>
+      </FeatureHero>
 
       <div className="flex flex-wrap gap-2">
         {CLIMATE_VARIETIES.map((x) => (

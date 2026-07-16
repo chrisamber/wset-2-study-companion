@@ -1,20 +1,24 @@
 import Link from "next/link";
 import { CONCEPTS } from "@/data/concepts";
 import { Card, Chip } from "@/components/wset-ui";
+import { FeatureHero } from "@/components/FeatureHero";
 
 export const metadata = { title: "Learn — WSET L2" };
 
 export default function LearnPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 rise">
-      <header>
-        <div className="eyebrow mb-2">Learn</div>
-        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Learn the syllabus</h1>
-        <p className="mt-2 text-muted text-[15px]">
+      <FeatureHero
+        eyebrow="Learn"
+        title="Learn the syllabus"
+        image="/feature-visuals/learn.jpg"
+        alt="An open notebook, pencil, wine glass, and bottle in soft window light"
+      >
+        <p>
           Six Learning Outcomes. The badge on each shows how many of the 50 exam marks it carries —
           so you can see where the time is best spent.
         </p>
-      </header>
+      </FeatureHero>
 
       <div className="space-y-6">
         {CONCEPTS.map((c) => (

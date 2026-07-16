@@ -5,6 +5,7 @@ import { shuffled } from "@/lib/quiz-engine";
 import type { Variety } from "@/lib/types";
 import { Card, Button, Chip, ProgressBar, QuizOption, Alert } from "@/components/wset-ui";
 import { Scale } from "@/components/Scale";
+import { FeatureHero } from "@/components/FeatureHero";
 
 type Screen = "home" | "run" | "done";
 
@@ -97,15 +98,18 @@ export default function ProfilePage() {
     const count = (principalOnly ? VARIETIES.filter((v) => v.tier === "principal") : VARIETIES).length;
     return (
       <div className="space-y-6 rise">
-        <header>
-          <div className="eyebrow mb-2">Style → Grape</div>
-          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Profile</h1>
-          <p className="mt-2 text-muted text-[15px]">
+        <FeatureHero
+          eyebrow="Style → Grape"
+          title="Profile"
+          image="/feature-visuals/profile.jpg"
+          alt="A wrapped anonymous bottle, tasting glass, and blank aroma cards"
+        >
+          <p>
             A grape&apos;s structure and aromas, name hidden — you pick the variety. The reverse of
             Explore, drilling the style-to-grape synthesis at the heart of{" "}
             <strong className="text-wine">LO3 + LO4 (62% of the marks)</strong>.
           </p>
-        </header>
+        </FeatureHero>
 
         <Card className="p-5">
           <p className="text-sm text-muted leading-relaxed">

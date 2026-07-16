@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { TERMS, GI_TO_GRAPE } from "@/data/terms";
 import type { Term } from "@/lib/types";
+import { FeatureHero } from "@/components/FeatureHero";
 
 const GROUPS = ["EU", "France", "Italy", "Spain", "Germany", "Sparkling", "Fortified", "Vineyard"];
 
@@ -33,14 +34,17 @@ export default function DecodePage() {
 
   return (
     <div className="space-y-6 rise">
-      <header>
-        <div className="eyebrow mb-2">Decode</div>
-        <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Label decoder</h1>
-        <p className="mt-1 text-muted">
+      <FeatureHero
+        eyebrow="Decode"
+        title="Label decoder"
+        image="/feature-visuals/decode.jpg"
+        alt="A magnifying glass resting against a blank wine-bottle label"
+      >
+        <p>
           What the words on the bottle guarantee — quality tiers, ageing terms, sweetness and
           ripeness levels. Search or filter by country.
         </p>
-      </header>
+      </FeatureHero>
 
       <div className="space-y-3">
         <input

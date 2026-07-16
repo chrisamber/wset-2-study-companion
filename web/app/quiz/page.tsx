@@ -13,6 +13,7 @@ import { LO_NAMES } from "@/lib/types";
 import { QUESTIONS, PAPERS, questionsByPaper, questionsByLOs, questionsByIds, loCounts } from "@/data/questions";
 import { useProgress } from "@/lib/progress";
 import { Card, Button, Chip, ProgressBar, QuizOption, Alert, Badge } from "@/components/wset-ui";
+import { FeatureHero } from "@/components/FeatureHero";
 
 type Screen = "home" | "exam-setup" | "practice-setup" | "run" | "results";
 interface Meta {
@@ -94,11 +95,14 @@ export default function QuizPage() {
     const lm = progress.lastMissed;
     return (
       <div className="space-y-6 rise">
-        <header>
-          <div className="eyebrow mb-2">Quiz</div>
-          <h1 className="mt-2 font-display text-3xl font-semibold text-ink">Test yourself</h1>
-          <p className="mt-2 text-muted text-[15px]">{QUESTIONS.length} independently fact-checked questions across {PAPERS.length} mock papers.</p>
-        </header>
+        <FeatureHero
+          eyebrow="Quiz"
+          title="Test yourself"
+          image="/feature-visuals/quiz.jpg"
+          alt="A blank answer sheet, pencil, timer, and wine glass in window light"
+        >
+          <p>{QUESTIONS.length} independently fact-checked questions across {PAPERS.length} mock papers.</p>
+        </FeatureHero>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Card interactive onClick={() => changeScreen("exam-setup")} className="p-5 text-left">
