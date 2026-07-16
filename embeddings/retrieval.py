@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Reusable retrieval for the wikibrain store: embed the query (plus any
+"""Reusable retrieval for the Decant study index: embed the query (plus any
 variants, one batched call) -> pgvector cosine top-K AND Postgres FTS top-K
 per query -> reciprocal-rank fusion -> rerank-2.5 top-N against the original
-query. Imported by query.py (the /vq CLI), mcp_server.py, and eval.py.
+query. Imported by query.py (the /vq CLI).
 
 Pre-rerank Hit.score is the RRF fusion score (rank-based, ~0.016 max), not a
 cosine similarity; post-rerank Hit.score is the rerank-2.5 relevance score.
@@ -30,16 +30,9 @@ VARIANT_RRF_WEIGHT = 0.5
 
 # VQ-022 — source-tier down-weight. Multipliers applied to a chunk's score by
 # its top-level path tier, so curated wiki/ answers win ties over noisy tiers
-# under --scope all. OPT-IN only (retrieve(tier_weights=...) / eval.py
-# --tier-weights / query.py --tier-weights); the default path is unweighted
-# (tier_weights=None). An unlisted tier is neutral (1.0).
-#
-# These are the gate-PASSING weights from the A/B sweep, NOT the plan's original
-# proposal (wiki 1.15 / raw 0.65 / inbox 0.5), which FAILED the no-deploy gate:
-# raw=0.65 demoted a raw/ also_ok answer 3 MRR ranks on the KV-cache question.
-# The sweep showed the benefit comes from the gentle wiki BOOST (displacement
-# 0.0698→0.0, MRR 0.905→0.9147, recall@5 held, 0 regressions); aggressive raw
-# demotion only adds risk. See outputs/vq-022-tier-weight-experiment-2026-06-17.md.
+# under --scope all. OPT-IN only; the default path is unweighted. The gentle
+# wiki boost favours curated notes without pushing dense raw sources out of the
+# candidate pool. An unlisted tier is neutral (1.0).
 DEFAULT_TIER_WEIGHTS = {
     "wiki": 1.1,
     "references": 1.0,
@@ -138,7 +131,7 @@ def parse_tier_weights_spec(spec: str | None) -> dict:
     """Parse a 'tier=weight,tier=weight' override string into a weights dict,
     merged over DEFAULT_TIER_WEIGHTS (only changed tiers need listing). A falsy
     spec → a fresh copy of the default. Raises ValueError on malformed input.
-    Used by eval.py --tier-weights-spec to sweep configurations (VQ-022)."""
+    Useful to callers that want to compare weighting configurations."""
     weights = dict(DEFAULT_TIER_WEIGHTS)
     if not spec or not spec.strip():
         return weights
@@ -234,13 +227,10 @@ def _vec(emb: list[float]) -> str:
     return "[" + ",".join(str(x) for x in emb) + "]"
 
 
-# Default retrieval scope: the whole store. This is a small, flat study vault —
-# the root study notes (chardonnay.md, riesling.md, …) are mostly brief, with the
-# rich detail living in their sources/ files, so by default we want BOTH the
-# curated note and its source competing in the candidate pool and let the reranker
-# pick the best chunk. Pass scope="sources/" to target only the dense reference
-# material, or any slug prefix to target a layer. Filtering at the SQL leg — not
-# after rerank — keeps the RETRIEVE_K pool full of in-scope chunks.
+# Default retrieval scope: the whole indexed corpus, so curated wiki/ notes and
+# dense raw/ sources can compete in the candidate pool. Pass scope="wiki/" or
+# scope="raw/" to target one layer. Filtering at the SQL leg — not after rerank —
+# keeps the RETRIEVE_K pool full of in-scope chunks.
 DEFAULT_SCOPE = ""
 
 
@@ -296,8 +286,7 @@ def _or_query(query: str) -> str:
 
 # CJK ranges (Hiragana/Katakana/CJK Unified + compat + fullwidth). The FTS leg
 # uses the 'english' text-search config, which collapses a CJK string to noise
-# and matches 0 chunks — so hybrid silently degrades to vector-only. Detect and
-# skip the dead leg (flagship Mandopop content is CJK-bearing; see A6-02).
+# and matches 0 chunks, so skip that dead leg explicitly.
 _CJK_RE = re.compile(
     r"[　-〿぀-ヿ㐀-䶿一-鿿"
     r"豈-﫿＀-￯]"
